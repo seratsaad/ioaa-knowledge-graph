@@ -372,8 +372,8 @@ hr.hair { border: 0; border-top: 1px solid var(--hairline); margin: var(--s3) 0;
   </div>
   <div class="tools">
     <div class="search">
-      <input id="q" type="search" placeholder="Search concepts" autocomplete="off"
-             aria-label="Search concepts">
+      <input id="q" type="search" placeholder="Search topics" autocomplete="off"
+             aria-label="Search topics">
       <ul id="results" class="card" hidden></ul>
     </div>
     <button class="btn" id="btn-methods" aria-pressed="true" title="Show or hide transversal method concepts">Methods</button>
@@ -436,7 +436,7 @@ hr.hair { border: 0; border-top: 1px solid var(--hairline); margin: var(--s3) 0;
   <h3 id="d-name"></h3>
   <div class="cid mono" id="d-id"></div>
   <div class="row">
-    <div class="stat"><span class="k">Share of marks</span><span class="v" id="d-share"></span></div>
+    <div class="stat"><span class="k" title="Share of the selection's marks sitting in parts that require this. Topics overlap, so these do not sum to 100%.">Marks requiring it</span><span class="v" id="d-share"></span></div>
     <div class="stat"><span class="k">Exam parts</span><span class="v" id="d-units"></span></div>
     <div class="stat"><span class="k">Links</span><span class="v" id="d-deg"></span></div>
   </div>
@@ -473,16 +473,19 @@ hr.hair { border: 0; border-top: 1px solid var(--hairline); margin: var(--s3) 0;
        the syllabus at all.</p>
 
     <h3>What a dot is</h3>
-    <p>One concept. Its area is that concept's share of the marks, with each
+    <p>One topic. Its area tracks the marks that <em>require</em> it, with each
        year normalised to count equally &mdash; mark totals differ by a factor
        of ten between early and recent olympiads, so raw points are not
-       comparable. Colour is the syllabus section. Grey dots are methods:
+       comparable. A topic's percentage is the share of the selection's marks
+       sitting in parts that need it, so the figures overlap and do not add to
+       100% &mdash; a part requiring four topics counts toward all four. Read
+       them as coverage, not as slices of a pie. Colour is the syllabus section. Grey dots are methods:
        things like the small-angle approximation or error propagation, which a
        solution <em>uses</em> rather than being <em>about</em>.</p>
 
     <h3>What a line is</h3>
-    <p>Two concepts are linked when the same exam part requires both. The
-       strength is directional: of the marks that test concept A, what fraction
+    <p>Two topics are linked when the same exam part requires both. The
+       strength is directional: of the marks that test topic A, what fraction
        also demand B. That is the exam analogue of the citation relevance used
        in the astro-ph knowledge graph of Sun, Ting and collaborators, where the
        question is what fraction of the papers cited by work on A discuss B.
