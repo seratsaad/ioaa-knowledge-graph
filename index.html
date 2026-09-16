@@ -1,4 +1,13 @@
 <title>IOAA Knowledge Graph</title>
+<script>
+  // SVG output needs no web fonts, which keeps the page self-contained.
+  window.MathJax = {
+    tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] },
+    svg: { fontCache: "global", scale: 1.0 },
+    options: { skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"] }
+  };
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
 <style>
 /* ===========================================================================
    IOAA Knowledge Graph, styled after arXiv.
@@ -25,7 +34,8 @@
   /* The canvas reads these three by name. Keep them literal: an undefined
      custom property makes ctx.fillStyle silently keep its previous value,
      which once painted the labels white on white. */
-  --edge:    #aab4c0;
+  --plot-bg: #f7f9fb;      /* the figure's own ground, so it reads as a figure */
+  --edge:    #a3aebb;
   --ink-dim: #222222;
   --font:    'Lucida Grande', helvetica, arial, verdana, sans-serif;
 
@@ -112,8 +122,9 @@ code, .mono { font-family: var(--mono); font-size: .92em; }
 
 /* ------------------------------------------------------------------ figure */
 figure { margin: 0 0 20px; }
-.plot { display: flex; border: 1px solid var(--rule-2); background: #fff; }
-#stage { flex: 1; min-width: 0; position: relative; height: 620px; }
+.plot { display: flex; border: 1px solid var(--rule-2); background: var(--plot-bg); }
+#stage { flex: 1; min-width: 0; position: relative; height: 620px;
+         background: var(--plot-bg); }
 #net { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
 #net.grabbing { cursor: grabbing; }
 
@@ -187,10 +198,11 @@ figcaption .sep { margin: 0 7px; color: var(--rule-2); }
 .doc p, .doc li { font: 400 14px/1.6 var(--sans); color: var(--ink-2); }
 .doc ul, .doc ol { margin: 0 0 .75em; padding-left: 1.3em; }
 .doc li { margin-bottom: .3em; }
-.doc .eq { font-family: var(--mono); font-size: 13px; background: var(--tint);
-           border-left: 3px solid var(--rule-2); padding: 7px 10px;
-           margin: 9px 0; color: var(--ink); overflow-x: auto; }
-.doc .eq em { color: var(--muted); font-style: normal; }
+.doc .eq { margin: 16px 0; padding: 2px 0; text-align: center;
+           overflow-x: auto; overflow-y: hidden; color: var(--ink); }
+.doc .eq mjx-container { margin: 0 auto !important; }
+.doc .eq .gloss { display: block; font-size: 12.5px; color: var(--muted);
+                  margin-top: 5px; }
 .doc strong { font-weight: 600; color: var(--ink); }
 
 table.data { border-collapse: collapse; font-size: 13px; margin: 10px 0 16px;
@@ -327,7 +339,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       2007 problem carried 2 points and the median 2008 problem carried 20. So
       we divide each unit's marks by the total for its year, which makes every
       olympiad count the same.</p>
-    <div class="eq">w(u) = marks(u) &divide; total marks that year</div>
+    <div class="eq">\[ w(u) \;=\; \frac{\mathrm{marks}(u)}{\displaystyle\sum_{u' \in \mathrm{year}(u)} \mathrm{marks}(u')} \]</div>
     <p>Two years gave us trouble. The 2012 and 2014 papers never published marks
       and 2015 published only three, so we give those problems the median value
       for their year. Where a problem shows no per-part marks we split its total
@@ -335,7 +347,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       us.</p>
 
     <h3>2. How heavily we see a topic examined</h3>
-    <div class="eq">m(A) = sum of w(u) over every unit that needs A</div>
+    <div class="eq">\[ m(A) \;=\; \sum_{u \,:\, A \in K(u)} w(u) \]</div>
     <p>The area of each dot follows m(A). The percentage we show divides that by
       the total weight of whatever you have selected. <strong>These percentages
       do not add up to 100.</strong> They add up to roughly 400, because a unit
@@ -346,8 +358,8 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     <h3>3. How we link topics</h3>
     <p>We link two topics when the same exam part needs both. We measure the
       strength as a conditional probability and we keep the direction.</p>
-    <div class="eq">n(A,B) = sum of w(u) over units that need both<br>
-      p(B|A) = n(A,B) &divide; m(A)</div>
+    <div class="eq">\[ n(A,B) \;=\; \sum_{u \,:\, A,\,B \in K(u)} w(u)
+      \qquad\qquad p(B \mid A) \;=\; \frac{n(A,B)}{m(A)} \]</div>
     <p>Read that as the share of marks testing A that also demand B. Direction
       matters, so we keep both readings. Of the marks on orbital energy, 36 per
       cent also need Kepler's first law, while only 20 per cent run the other
@@ -485,6 +497,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
   var ACTIVE = [];                 // active (round x period) cell indices
   var WSEL = 1;                    // total mark weight of the selection
   var view = { k: 1, x: 0, y: 0 };             // zoom + pan
+  var baseK = 1;                              // the scale fit() settled on
   var canvas = document.getElementById("net"), ctx = canvas.getContext("2d");
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
   var W = 0, H = 0;
@@ -578,7 +591,16 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     loadLevel(d.level_order.indexOf("topic") !== -1 ? "topic" : d.level_order[0]);
     buildLegend(); buildLevels(); buildChips(); buildFacts();
     buildOverlay(); fillAbout(); wireThreshold();
-    resize(); fit(); draw();
+    layoutWhenSized();
+  }
+
+  // A hidden tab or a pane still settling gives the canvas no size, and fitting
+  // to a zero box leaves the graph wrong until something forces a resize. Wait
+  // for a real box before framing it.
+  function layoutWhenSized(tries) {
+    tries = tries || 0;
+    if (resize()) { fit(); draw(); return; }
+    if (tries < 60) requestAnimationFrame(function () { layoutWhenSized(tries + 1); });
   }
 
   /* ------------------------------------------------------------- shares -- */
@@ -651,13 +673,32 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     canvas.width = Math.round(W * DPR);
     canvas.height = Math.round(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    return W > 0 && H > 0;
   }
   function fit() {
-    var pad = 26;
-    var w = W - pad * 2, h = H - pad * 2;
-    view.k = Math.min(w, h) * 0.96;
-    view.x = pad + (w - view.k) / 2;
-    view.y = pad + (h - view.k) / 2;
+    // Frame the nodes we are actually showing. The published positions sit in
+    // a unit square but the cloud rarely fills it, so fitting the square left
+    // the graph small inside its frame.
+    var vis = N.filter(visible);
+    if (!vis.length) vis = N;
+    var minx = Infinity, maxx = -Infinity, miny = Infinity, maxy = -Infinity;
+    for (var i = 0; i < vis.length; i++) {
+      var n = vis[i];
+      if (n.px < minx) minx = n.px;
+      if (n.px > maxx) maxx = n.px;
+      if (n.py < miny) miny = n.py;
+      if (n.py > maxy) maxy = n.py;
+    }
+    var bw = Math.max(maxx - minx, 1e-6), bh = Math.max(maxy - miny, 1e-6);
+    // leave room for the largest dot so nothing clips at the edge
+    var mx = maxShare(), maxR = 0;
+    for (var j = 0; j < vis.length; j++) maxR = Math.max(maxR, radius(vis[j], mx));
+    var pad = Math.min(maxR + 10, 60);
+    var w = Math.max(W - pad * 2, 10), h = Math.max(H - pad * 2, 10);
+    view.k = Math.min(w / bw, h / bh);
+    baseK = view.k;
+    view.x = pad + (w - bw * view.k) / 2 - minx * view.k;
+    view.y = pad + (h - bh * view.k) / 2 - miny * view.k;
   }
   function sx(n) { return n.px * view.k + view.x; }
   function sy(n) { return n.py * view.k + view.y; }
@@ -702,7 +743,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     ctx.globalAlpha = 1;
 
     /* nodes */
-    var bg = cssVar("--bg");
+    var bg = cssVar("--plot-bg", "#f7f9fb");
     for (var j = 0; j < N.length; j++) {
       var n = N[j];
       if (!visible(n)) continue;
@@ -731,15 +772,21 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     }
     ctx.globalAlpha = 1;
 
-    /* labels: the biggest concepts, plus whatever is in focus */
-    var order = N.filter(visible).sort(function (p, q) { return shareOf(q) - shareOf(p); });
-    var cap = view.k > 900 ? 34 : 20;
-    var show = order.slice(0, cap);
+    /* Labels stay off until you point at something. A map of 233 topics cannot
+       carry 233 names at once, and the ones that fit were never the ones you
+       wanted. Hovering or selecting a topic names it and names what it links
+       to, which is the question you are actually asking. */
+    var show = [];
     if (focus !== null) {
-      show = show.filter(function (n) { return n.idx !== focus; });
-      show.unshift(N[focus]);
-      adj[focus].slice(0, 6).forEach(function (l) {
-        if (visible(N[l.j]) && show.indexOf(N[l.j]) === -1) show.push(N[l.j]);
+      show.push(N[focus]);
+      adj[focus].forEach(function (l) {
+        if (l.joint > 0 && (!l.prov || state.showProv) && visible(N[l.j]) &&
+            show.length < 9 && show.indexOf(N[l.j]) === -1) show.push(N[l.j]);
+      });
+    }
+    if (qlist) {                      // searching should also name the matches
+      qlist.slice(0, 12).forEach(function (n) {
+        if (show.indexOf(n) === -1) show.push(n);
       });
     }
     ctx.textAlign = "center"; ctx.textBaseline = "top";
@@ -756,11 +803,13 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       });
       if (clash && n.idx !== focus) return;
       placed.push(box);
-      ctx.globalAlpha = 0.86; ctx.fillStyle = bg;
+      ctx.globalAlpha = 0.92; ctx.fillStyle = bg;
       ctx.fillRect(box[0], box[1], box[2], box[3]);
       ctx.globalAlpha = 1;
-      ctx.fillStyle = n.idx === focus ? cssVar("--ink", "#000")
-                                      : cssVar("--ink-dim", "#222");
+      // Paint the ink with a literal, never a lookup. A custom property that
+      // fails to resolve leaves fillStyle at its previous value, which is the
+      // plate we just drew, and the label goes invisible.
+      ctx.fillStyle = n.idx === focus ? "#000000" : "#1a1a1a";
       ctx.fillText(t, X, Y);
     });
   }
@@ -842,8 +891,10 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     var tip = $("#tip");
     if (n && state.selected === null) {
       tip.hidden = false;
-      tip.innerHTML = esc(n.name) + "<span class='s'>" + fmtPc(shareOf(n))
-        + " of marks &middot; " + n.units + " parts</span>";
+      tip.innerHTML = (n.mass > 0
+          ? "<b>" + fmtPc(n.share) + "</b> of marks"
+          : "not tested in this selection")
+        + "<span class='s'>" + n.units + " parts &middot; " + n.deg + " links</span>";
       var tw = tip.offsetWidth;
       tip.style.left = Math.min(ev.clientX + 12, window.innerWidth - tw - 10) + "px";
       tip.style.top = (ev.clientY + 14) + "px";
@@ -1189,8 +1240,10 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
   });
 
   function goTo(idx) {
+    // Move in enough to read the neighbourhood, not so far that the rest of
+    // the map leaves the frame.
     var n = N[idx];
-    view.k = Math.max(view.k, 1600);
+    view.k = Math.max(view.k, baseK * 2.2);
     view.x = W * 0.5 - n.px * view.k;
     view.y = H * 0.5 - n.py * view.k;
     select(idx);
@@ -1237,7 +1290,14 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     if (ev.key === "m") $("#btn-methods").click();
     if (ev.key === "u") $("#btn-prov").click();
   });
-  window.addEventListener("resize", function () { resize(); fit(); schedule(); });
+  window.addEventListener("resize", function () {
+    if (resize()) { fit(); schedule(); }
+  });
+  if (window.ResizeObserver) {
+    new ResizeObserver(function () {
+      if (resize()) { fit(); schedule(); }
+    }).observe(document.getElementById("stage"));
+  }
 
 
   /* --------------------------------------------------------------- utils - */
