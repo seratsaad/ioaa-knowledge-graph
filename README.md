@@ -171,7 +171,3 @@ and a data file of syllabus topic names, mark shares and layout positions. We
 keep the analysis code in a separate private repository.
 
 We are not affiliated with the IOAA and they have not endorsed this work.
-
-## Credits
-
-Serat Saad and Fahim Rajit Hossain.
