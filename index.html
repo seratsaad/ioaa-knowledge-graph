@@ -1,0 +1,1384 @@
+<title>IOAA Concept Atlas</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* ===========================================================================
+   IOAA Concept Atlas
+   Ground: observatory plate emulsion (dark) / problem-book paper (light).
+   Sections carry hue; transversal method concepts are deliberately grey, so
+   the method layer reads as a different kind of thing, not a twelfth topic.
+   =========================================================================== */
+
+:root {
+  --ink:        #1A1D24;
+  --ink-dim:    #4E5563;
+  --ink-faint:  #7A8191;
+  --bg:         #F6F2EA;
+  --bg-deep:    #EDE7DB;
+  --panel:      rgba(255, 253, 249, 0.92);
+  --panel-solid:#FFFDF9;
+  --inset:      rgba(26, 29, 36, 0.045);
+  --stroke:     rgba(26, 29, 36, 0.16);
+  --hairline:   rgba(26, 29, 36, 0.09);
+  --accent:     #A8571E;
+  --accent-soft:rgba(168, 87, 30, 0.12);
+  --edge:       rgba(26, 29, 36, 0.20);
+  --shadow:     0 2px 4px rgba(26,29,36,.05), 0 12px 32px rgba(26,29,36,.10);
+
+  --fs-micro: 10.5px;
+  --fs-small: 12px;
+  --fs-body:  13.5px;
+  --fs-lg:    15px;
+  --fs-xl:    18px;
+  --track-caps: 0.085em;
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 22px; --s6: 30px;
+  --radius: 10px; --radius-sm: 6px;
+
+  --font: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+
+  /* section hues — tuned to hold on both grounds */
+  --c-BA: #C9661B; --c-CT: #1F6FB8; --c-SS: #9A7A12; --c-ST: #BC3229;
+  --c-SY: #6F45A8; --c-CO: #14837C; --c-RE: #B62C74; --c-IN: #5F7A17;
+  --c-OB: #2F7360; --c-DA: #4A6B8C; --c-ME: #6E727C;
+}
+
+:root:not([data-theme="light"]) {
+  @media (prefers-color-scheme: dark) {
+    --ink: #E9EDF5; --ink-dim: #A3ACBE; --ink-faint: #6F7890;
+    --bg: #0C1018; --bg-deep: #070A10;
+    --panel: rgba(21, 26, 37, 0.90); --panel-solid: #151A25;
+    --inset: rgba(255,255,255,.04);
+    --stroke: rgba(150,170,205,.20); --hairline: rgba(150,170,205,.12);
+    --accent: #E0A46A; --accent-soft: rgba(224,164,106,.14);
+    --edge: rgba(160,180,215,.22);
+    --shadow: 0 2px 4px rgba(0,0,0,.30), 0 14px 40px rgba(0,0,0,.45);
+    --c-BA: #EE9147; --c-CT: #59A9E8; --c-SS: #D4B23F; --c-ST: #E86B5F;
+    --c-SY: #A98BE0; --c-CO: #3CBCB0; --c-RE: #E877AE; --c-IN: #A3C044;
+    --c-OB: #4FB393; --c-DA: #7FA3C9; --c-ME: #8C919D;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ink: #E9EDF5; --ink-dim: #A3ACBE; --ink-faint: #6F7890;
+  --bg: #0C1018; --bg-deep: #070A10;
+  --panel: rgba(21, 26, 37, 0.90); --panel-solid: #151A25;
+  --inset: rgba(255,255,255,.04);
+  --stroke: rgba(150,170,205,.20); --hairline: rgba(150,170,205,.12);
+  --accent: #E0A46A; --accent-soft: rgba(224,164,106,.14);
+  --edge: rgba(160,180,215,.22);
+  --shadow: 0 2px 4px rgba(0,0,0,.30), 0 14px 40px rgba(0,0,0,.45);
+  --c-BA: #EE9147; --c-CT: #59A9E8; --c-SS: #D4B23F; --c-ST: #E86B5F;
+  --c-SY: #A98BE0; --c-CO: #3CBCB0; --c-RE: #E877AE; --c-IN: #A3C044;
+  --c-OB: #4FB393; --c-DA: #7FA3C9; --c-ME: #8C919D;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 var(--fs-body)/1.5 var(--font);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { margin: 0; line-height: 1.2; font-weight: 600; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.num  { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.caps {
+  font: 600 var(--fs-micro)/1.2 var(--font);
+  letter-spacing: var(--track-caps); text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ---------------------------------------------------------------- canvas -- */
+#stage { position: fixed; inset: 0; }
+#net { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+#net.grabbing { cursor: grabbing; }
+
+/* ------------------------------------------------------------------ chrome */
+.card {
+  background: var(--panel); border: 1px solid var(--stroke);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+}
+
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 6;
+  display: flex; align-items: flex-start; gap: var(--s4);
+  padding: var(--s3) var(--s4) var(--s6);
+  pointer-events: none;
+  background: linear-gradient(var(--bg), transparent 85%);
+}
+#topbar > * { pointer-events: auto; }
+.brand h1 {
+  font: 400 21px/1.1 var(--display); letter-spacing: -0.005em;
+}
+.brand p {
+  font-size: var(--fs-small); color: var(--ink-dim); margin-top: 3px;
+  max-width: 46ch;
+}
+.brand .rule {
+  width: 34px; height: 2px; background: var(--accent);
+  margin: 7px 0 6px; border-radius: 1px;
+}
+
+.tools { margin-left: auto; display: flex; gap: var(--s2); align-items: center; }
+
+.search { position: relative; width: min(280px, 26vw); }
+.search input {
+  width: 100%; height: 34px; padding: 0 var(--s3);
+  border-radius: 999px; border: 1px solid var(--stroke);
+  background: var(--panel); color: var(--ink);
+  font: 400 var(--fs-small)/1 var(--font);
+  backdrop-filter: blur(16px);
+}
+.search input::placeholder { color: var(--ink-faint); }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+#results {
+  position: absolute; top: 38px; left: 0; right: 0; max-height: 44vh;
+  overflow-y: auto; list-style: none; margin: 0; padding: var(--s1);
+  z-index: 8;
+}
+#results li {
+  display: flex; align-items: center; gap: var(--s2);
+  padding: 6px var(--s2); border-radius: var(--radius-sm); cursor: pointer;
+  font-size: var(--fs-small);
+}
+#results li:hover, #results li[aria-selected="true"] { background: var(--accent-soft); }
+#results .sw { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+#results .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#results .ct { font: 500 var(--fs-micro)/1 var(--mono); color: var(--ink-faint); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 5px; height: 34px;
+  padding: 0 var(--s3); border-radius: 999px;
+  border: 1px solid var(--stroke); background: var(--panel);
+  color: var(--ink-dim); font: 500 var(--fs-small)/1 var(--font);
+  backdrop-filter: blur(16px);
+  transition: color .14s, border-color .14s, background .14s;
+}
+.btn:hover { color: var(--ink); border-color: var(--ink-faint); }
+.btn[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* -------------------------------------------------------------------- rail */
+#rail {
+  position: fixed; left: var(--s4); top: 96px; bottom: 54px; width: 232px;
+  z-index: 5; display: flex; flex-direction: column; gap: var(--s3);
+  overflow-y: auto; padding-right: 2px;
+}
+#rail section { padding: var(--s3); }
+#rail h2 { margin-bottom: var(--s2); }
+#rail .hint { font-size: var(--fs-micro); color: var(--ink-faint); margin-top: var(--s2); line-height: 1.45; }
+
+.legend { display: flex; flex-direction: column; gap: 1px; }
+.legend button {
+  display: flex; align-items: center; gap: var(--s2);
+  padding: 4px var(--s2); border: 0; background: none; border-radius: var(--radius-sm);
+  text-align: left; width: 100%; font-size: var(--fs-small); color: var(--ink-dim);
+  transition: background .12s, color .12s;
+}
+.legend button:hover { background: var(--inset); color: var(--ink); }
+.legend button[aria-pressed="true"] { color: var(--ink); font-weight: 500; }
+.legend button.dim { opacity: .38; }
+.legend .sw { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+.legend .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.legend .ct { font: 500 var(--fs-micro)/1 var(--mono); color: var(--ink-faint); }
+.legend .mrk { font: 600 9px/1 var(--mono); color: var(--ink-faint); letter-spacing: .04em; }
+
+.chips { display: flex; flex-direction: column; gap: 3px; }
+.chips button {
+  display: flex; align-items: baseline; gap: var(--s2);
+  padding: 5px var(--s2); border: 1px solid transparent; background: none;
+  border-radius: var(--radius-sm); width: 100%; text-align: left;
+  font-size: var(--fs-small); color: var(--ink-faint);
+  transition: color .12s, border-color .12s, background .12s;
+}
+.chips button:hover { background: var(--inset); color: var(--ink); }
+.chips button[aria-pressed="true"] {
+  border-color: var(--accent); color: var(--ink); background: var(--accent-soft);
+}
+.chips .yr { font: 500 var(--fs-small)/1 var(--mono); }
+.chips .u  { margin-left: auto; font: 400 var(--fs-micro)/1 var(--mono); color: var(--ink-faint); }
+.chips .all { margin-top: 4px; font-size: var(--fs-micro); color: var(--ink-faint);
+              border: 0; padding: 2px var(--s2); text-align: left; }
+.chips .all:hover { color: var(--accent); background: none; }
+
+.eras { display: flex; flex-direction: column; gap: 3px; }
+.eras button {
+  display: flex; align-items: baseline; gap: var(--s2);
+  padding: 5px var(--s2); border: 1px solid transparent; background: none;
+  border-radius: var(--radius-sm); width: 100%; text-align: left;
+  font-size: var(--fs-small); color: var(--ink-dim);
+}
+.eras button:hover { background: var(--inset); color: var(--ink); }
+.eras button[aria-pressed="true"] {
+  border-color: var(--accent); color: var(--ink); background: var(--accent-soft);
+}
+.eras .yr { font: 500 var(--fs-small)/1 var(--mono); }
+.eras .u  { margin-left: auto; font: 400 var(--fs-micro)/1 var(--mono); color: var(--ink-faint); }
+
+.thresh { display: flex; align-items: center; gap: var(--s2); margin-top: var(--s3);
+          font-size: var(--fs-micro); color: var(--ink-faint); }
+.thresh input { flex: 1; min-width: 0; accent-color: var(--accent); height: 16px; }
+.thresh .num { min-width: 30px; text-align: right; color: var(--ink-dim); font-size: var(--fs-micro); }
+
+.facts { display: grid; grid-template-columns: 1fr auto; gap: 5px var(--s2); align-items: baseline; }
+.facts dt { font-size: var(--fs-micro); color: var(--ink-faint); }
+.facts dd { margin: 0; font: 500 var(--fs-small)/1 var(--mono); font-variant-numeric: tabular-nums; }
+
+.overlay-empty {
+  border: 1px dashed var(--stroke); border-radius: var(--radius-sm);
+  padding: var(--s2) var(--s3); font-size: var(--fs-micro);
+  color: var(--ink-faint); line-height: 1.5;
+}
+.overlay-empty code { font-family: var(--mono); color: var(--ink-dim); font-size: 10px; }
+
+/* ------------------------------------------------------------------ detail */
+#detail {
+  position: fixed; right: var(--s4); top: 96px; width: 310px;
+  max-height: calc(100vh - 150px); overflow-y: auto; z-index: 5;
+  padding: var(--s4);
+}
+#detail[hidden] { display: none !important; }
+#detail .kicker { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+#detail .kicker .sw { width: 9px; height: 9px; border-radius: 2px; flex: none; }
+#detail h3 { font: 400 var(--fs-xl)/1.25 var(--display); margin-bottom: var(--s1); text-wrap: balance; }
+#detail .cid { font: 400 var(--fs-micro)/1 var(--mono); color: var(--ink-faint); }
+#detail .close {
+  position: absolute; top: 10px; right: 10px; width: 24px; height: 24px;
+  border: 0; background: none; color: var(--ink-faint); border-radius: 50%;
+  font-size: 15px; line-height: 1; display: grid; place-items: center;
+}
+#detail .close:hover { background: var(--inset); color: var(--ink); }
+#detail .row { display: flex; gap: var(--s3); margin: var(--s3) 0; }
+#detail .stat { flex: 1; }
+#detail .stat .k { font-size: var(--fs-micro); color: var(--ink-faint); display: block; }
+#detail .stat .v { font: 500 var(--fs-lg)/1.2 var(--mono); font-variant-numeric: tabular-nums; }
+#detail .stat .v small { font-size: var(--fs-small); color: var(--ink-faint); font-weight: 400; }
+hr.hair { border: 0; border-top: 1px solid var(--hairline); margin: var(--s3) 0; }
+
+.links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s2); }
+.links li { font-size: var(--fs-small); }
+.links .head { display: flex; align-items: center; gap: 6px; }
+.links .sw { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.links .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+             white-space: nowrap; cursor: pointer; }
+.links .nm:hover { color: var(--accent); text-decoration: underline; }
+.links .pc { font: 500 var(--fs-small)/1 var(--mono); color: var(--ink); }
+.links .bar { height: 3px; border-radius: 2px; background: var(--inset); margin-top: 4px; overflow: hidden; }
+.links .bar i { display: block; height: 100%; border-radius: 2px; }
+.links .gloss { font-size: var(--fs-micro); color: var(--ink-faint); margin-top: 3px; line-height: 1.4; }
+
+.mini { display: flex; flex-direction: column; gap: 3px; margin-top: 5px; }
+.mrow { display: flex; align-items: center; gap: var(--s2); font-size: var(--fs-micro); }
+.mrow .ml { width: 66px; flex: none; color: var(--ink-dim); overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap; }
+.mrow .mb { flex: 1; height: 4px; border-radius: 2px; background: var(--inset);
+            overflow: hidden; }
+.mrow .mb i { display: block; height: 100%; border-radius: 2px; }
+.mrow .mv { width: 26px; text-align: right; font-family: var(--mono);
+            font-variant-numeric: tabular-nums; color: var(--ink-dim); }
+
+/* ------------------------------------------------------------------ status */
+#status {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 4;
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s2) var(--s4) var(--s3);
+  font: 400 var(--fs-micro)/1.4 var(--font); color: var(--ink-faint);
+  background: linear-gradient(transparent, var(--bg) 60%);
+  pointer-events: none;
+}
+#status b { font-weight: 500; color: var(--ink-dim); }
+#status .sep { opacity: .4; }
+
+/* ------------------------------------------------------------------- modal */
+.modal {
+  position: fixed; inset: 0; z-index: 20; display: grid; place-items: center;
+  background: rgba(8, 11, 17, .55); padding: var(--s4);
+  backdrop-filter: blur(3px);
+}
+.modal[hidden] { display: none !important; }
+.modal .sheet {
+  background: var(--panel-solid); border: 1px solid var(--stroke);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  max-width: 640px; width: 100%; max-height: 86vh; overflow-y: auto;
+  padding: var(--s6) var(--s6) var(--s5); position: relative;
+}
+.modal h2 { font: 400 25px/1.15 var(--display); margin-bottom: var(--s2); }
+.modal h3 { font: 600 var(--fs-small)/1.2 var(--font); letter-spacing: var(--track-caps);
+            text-transform: uppercase; color: var(--ink-faint);
+            margin: var(--s5) 0 var(--s2); }
+.modal p { margin-bottom: var(--s3); max-width: 64ch; color: var(--ink-dim); }
+.modal p strong { color: var(--ink); font-weight: 500; }
+.modal code { font-family: var(--mono); font-size: 12px; background: var(--inset);
+              padding: 1px 4px; border-radius: 3px; color: var(--ink); }
+.modal .close {
+  position: absolute; top: 14px; right: 14px; width: 28px; height: 28px;
+  border: 0; background: none; color: var(--ink-faint); border-radius: 50%;
+  font-size: 17px; display: grid; place-items: center;
+}
+.modal .close:hover { background: var(--inset); color: var(--ink); }
+.modal table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+.modal th { text-align: left; font: 600 var(--fs-micro)/1 var(--font);
+            letter-spacing: var(--track-caps); text-transform: uppercase;
+            color: var(--ink-faint); padding: 0 var(--s2) 6px 0; }
+.modal td { padding: 4px var(--s2) 4px 0; border-top: 1px solid var(--hairline);
+            color: var(--ink-dim); }
+.modal td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+.modal .scroll { overflow-x: auto; }
+
+#tip {
+  position: fixed; z-index: 9; pointer-events: none;
+  background: var(--panel-solid); border: 1px solid var(--stroke);
+  border-radius: var(--radius-sm); padding: 5px var(--s2);
+  font: 500 var(--fs-small)/1.3 var(--font); color: var(--ink);
+  box-shadow: var(--shadow); max-width: 240px;
+}
+#tip[hidden] { display: none !important; }
+#tip .s { display: block; font: 400 var(--fs-micro)/1.3 var(--mono); color: var(--ink-faint); margin-top: 2px; }
+
+@media (max-width: 1080px) {
+  #rail { display: none; }
+  #detail { width: 280px; }
+  .brand p { display: none; }
+}
+@media (max-width: 720px) {
+  #detail { left: var(--s3); right: var(--s3); width: auto; top: auto;
+            bottom: 44px; max-height: 46vh; }
+  .search { width: 150px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; }
+}
+</style>
+
+<div id="stage"><canvas id="net"></canvas></div>
+
+<div id="topbar">
+  <div class="brand">
+    <h1>IOAA Concept Atlas</h1>
+    <div class="rule"></div>
+    <p>Every scorable part of the International Olympiad on Astronomy and
+       Astrophysics, 2007&ndash;2025, tagged against the official syllabus and
+       linked by what gets examined together.</p>
+  </div>
+  <div class="tools">
+    <div class="search">
+      <input id="q" type="search" placeholder="Search concepts" autocomplete="off"
+             aria-label="Search concepts">
+      <ul id="results" class="card" hidden></ul>
+    </div>
+    <button class="btn" id="btn-methods" aria-pressed="true" title="Show or hide transversal method concepts">Methods</button>
+    <button class="btn" id="btn-prov" aria-pressed="true" title="Show or hide single-part provisional links">Provisional links</button>
+    <button class="btn" id="btn-unex" aria-pressed="true" title="Show or hide syllabus topics with no marks in this selection">Untested topics</button>
+    <button class="btn" id="btn-reset" title="Reset the view">Reset</button>
+    <button class="btn" id="btn-theme" title="Switch light and dark">Theme</button>
+    <button class="btn" id="btn-about">How it works</button>
+  </div>
+</div>
+
+<aside id="rail">
+  <section class="card">
+    <h2 class="caps">Syllabus section</h2>
+    <div class="legend" id="legend"></div>
+    <p class="hint">Click to isolate a section, shift-click to add. Grey concepts
+       are transversal methods rather than astronomy topics.</p>
+  </section>
+
+  <section class="card">
+    <h2 class="caps">Detail</h2>
+    <div class="eras" id="levels"></div>
+    <label class="thresh">
+      <span>Hide below</span>
+      <input type="range" id="thresh" min="0" max="40" value="0" step="1"
+             aria-label="Minimum share of marks">
+      <span class="num" id="thresh-v">0%</span>
+    </label>
+    <p class="hint" id="level-hint"></p>
+  </section>
+
+  <section class="card">
+    <h2 class="caps">Round</h2>
+    <div class="chips" id="rounds"></div>
+    <p class="hint">Theory, data analysis and observation. Pick any combination;
+       everything on the page is recomputed from the parts you keep.</p>
+  </section>
+
+  <section class="card">
+    <h2 class="caps">Period</h2>
+    <div class="chips" id="eras"></div>
+    <p class="hint">Dot area tracks the selection's share of marks. Positions
+       stay fixed, so a topic is always in the same place.</p>
+  </section>
+
+  <section class="card">
+    <h2 class="caps">The exam</h2>
+    <dl class="facts" id="facts"></dl>
+  </section>
+
+  <section class="card">
+    <h2 class="caps">Overlay</h2>
+    <div id="overlay-box"></div>
+  </section>
+</aside>
+
+<div id="detail" class="card" hidden>
+  <button class="close" id="detail-close" aria-label="Close">&times;</button>
+  <div class="kicker"><span class="sw" id="d-sw"></span><span class="caps" id="d-sec"></span></div>
+  <h3 id="d-name"></h3>
+  <div class="cid mono" id="d-id"></div>
+  <div class="row">
+    <div class="stat"><span class="k">Share of marks</span><span class="v" id="d-share"></span></div>
+    <div class="stat"><span class="k">Exam parts</span><span class="v" id="d-units"></span></div>
+    <div class="stat"><span class="k">Links</span><span class="v" id="d-deg"></span></div>
+  </div>
+  <div id="d-trend"></div>
+  <hr class="hair">
+  <h2 class="caps" style="margin-bottom:var(--s2)">Examined alongside</h2>
+  <ul class="links" id="d-links"></ul>
+</div>
+
+<div id="status">
+  <span id="st-main"></span>
+  <span class="sep">&middot;</span>
+  <span id="st-ring"></span>
+  <span class="sep">&middot;</span>
+  <span>drag to pull &middot; scroll to zoom</span>
+</div>
+
+<div id="tip" hidden></div>
+
+<div class="modal" id="about" hidden>
+  <div class="sheet">
+    <button class="close" id="about-close" aria-label="Close">&times;</button>
+    <h2>How this map is built</h2>
+    <p>Every IOAA paper from 2007 to 2025 was split into its smallest scorable
+       pieces &mdash; a sub-part where the marking scheme gives one, a whole
+       problem where it does not. That gives <strong id="a-units">800</strong>
+       units across <strong>402</strong> problems. Each one was read together
+       with its official solution and tagged against a controlled vocabulary,
+       then placed against the <strong id="a-nodes">175</strong> topics the
+       official IOAA syllabus itself lists, so the labels mean the same thing
+       from one year to the next. <strong id="a-unex">31</strong> syllabus
+       topics have nothing in the atlas mapping onto them, and
+       <strong id="a-offsyl">60</strong> concepts the exam tests have no home in
+       the syllabus at all.</p>
+
+    <h3>What a dot is</h3>
+    <p>One concept. Its area is that concept's share of the marks, with each
+       year normalised to count equally &mdash; mark totals differ by a factor
+       of ten between early and recent olympiads, so raw points are not
+       comparable. Colour is the syllabus section. Grey dots are methods:
+       things like the small-angle approximation or error propagation, which a
+       solution <em>uses</em> rather than being <em>about</em>.</p>
+
+    <h3>What a line is</h3>
+    <p>Two concepts are linked when the same exam part requires both. The
+       strength is directional: of the marks that test concept A, what fraction
+       also demand B. That is the exam analogue of the citation relevance used
+       in the astro-ph knowledge graph of Sun, Ting and collaborators, where the
+       question is what fraction of the papers cited by work on A discuss B.
+       The detail panel reads the direction out in words, because
+       &ldquo;questions on Kepler&rsquo;s third law usually also need unit
+       conversion&rdquo; is not the same claim as its reverse.</p>
+    <p>A link survives only if at least two separate exam parts back it, so one
+       unusual question cannot invent a relationship. Each concept keeps its six
+       strongest links plus anything above a floor. Positions come from a
+       ForceAtlas2 layout: linked concepts pull together, everything pushes
+       everything else apart. There are no axes, and only nearness means
+       anything.</p>
+
+    <h3>Solid links and dashed ones</h3>
+    <p>A link is only counted when two separate exam parts require both
+       concepts, so one unusual question cannot invent a relationship. That rule
+       leaves a concept examined exactly once with no link at all, however
+       strong its single co-requirement is &mdash; and those concepts are not
+       noise. Main-sequence stars, neutron stars and radioactive decay are all
+       among them.</p>
+    <p>So for any concept that would otherwise be stranded, its strongest
+       single-part links are drawn dashed. <strong id="a-prov">199</strong> of
+       the links here are provisional in that sense. They connect the map
+       without being allowed to influence it: every statistic on this page is
+       computed on the solid links alone. The conclusion does not depend on the
+       choice &mdash; counting the dashed links too gives 36% of weight inside a
+       syllabus section rather than 41%, against the same 11% null.</p>
+
+    <h3>The syllabus's own three levels</h3>
+    <p>The official syllabus is a table with three levels: sections, the
+       Contents column inside each, and the individual Topics listed against
+       each Content. The map uses exactly those, so a dot is always something
+       the syllabus itself names. Each level is rebuilt from the tagged exam
+       parts directly rather than blurred down from the finest one, so a part
+       touching two topics in one Content counts once for that Content.</p>
+    <p>Topics the syllabus lists but no exam part in the current selection
+       tests are drawn as hollow rings, so the gaps in coverage are visible
+       rather than merely absent. Material the exam tests that the syllabus
+       never names is collected under <em>Outside the syllabus</em>.</p>
+
+    <h3>Rounds and periods</h3>
+    <p>Mark mass is additive over exam parts, so every quantity here is
+       recomputed from whichever rounds and periods you leave selected &mdash;
+       theory alone, data analysis alone, observation alone, or any combination,
+       over any span of years. Shares and link strengths are ratios and are
+       derived from those sums each time, never summed directly. Positions stay
+       fixed so a topic does not move when you change the selection.</p>
+
+    <h3>Does the exam follow its own syllabus?</h3>
+    <p>Yes, and measurably. <strong id="a-within">40%</strong> of the link
+       weight stays inside a single syllabus section, against
+       <strong id="a-null">11%</strong> for a rewired graph with the same
+       degrees &mdash; a gap of <strong id="a-z">24</strong> standard
+       deviations. The exam is not drifting from its syllabus at random.</p>
+    <p>It is drifting in one specific way. Concepts the published syllabus never
+       names &mdash; special relativity, black holes, gravitational waves &mdash;
+       carried <strong id="a-early">1.6%</strong> of the marks in 2007&ndash;2012
+       and <strong id="a-late">3.3%</strong> in 2019&ndash;2025.</p>
+
+    <h3>What has moved</h3>
+    <div class="scroll"><table id="a-movers">
+      <thead><tr><th>Concept</th><th>2007&ndash;12</th><th>2019&ndash;25</th><th>Change</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p style="margin-top:var(--s3)">Reading down the gainers and up the losers,
+       the same story appears twice: IOAA has moved marks out of visual
+       observation and into quantitative data analysis.</p>
+
+    <h3>Limits</h3>
+    <p>Tagging is a judgement call, made once per unit against a fixed
+       vocabulary. Marks for the 2012 and 2014 papers were never published and
+       are imputed from the year&rsquo;s median problem. Where a problem gives
+       no per-part marks, the problem total is split evenly across its parts.
+       All three choices are recorded per unit in the released data, so they can
+       be changed and the graph rebuilt.</p>
+    <p style="color:var(--ink-faint);font-size:var(--fs-small)">Problems and
+       solutions from the IOAA problem book, 2007&ndash;2025. Relevance metric
+       after Sun, Ting et al. (2024).</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SEC_ORDER = ["BA","CT","SS","ST","SY","CO","RE","IN","OB","DA","ME"];
+  var cssVar = function (n) {
+    return getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  };
+  var secColor = {};
+  function readColors() {
+    SEC_ORDER.forEach(function (s) { secColor[s] = cssVar("--c-" + s) || "#888"; });
+  }
+  readColors();
+
+  var DATA = null, LV = null, N = [], E = [], BY_ID = {};
+  var adj = {};                                // id -> [{j, w, p_out, p_in}]
+  var state = {
+    selected: null, hover: null, level: "topic",
+    rounds: [], eras: [],          // booleans, set once the payload arrives
+    isolate: null, showMethods: true, showProv: true, showUnexamined: true,
+    q: "", minShare: 0
+  };
+  var ACTIVE = [];                 // active (round x period) cell indices
+  var WSEL = 1;                    // total mark weight of the selection
+  var view = { k: 1, x: 0, y: 0 };             // zoom + pan
+  var canvas = document.getElementById("net"), ctx = canvas.getContext("2d");
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var W = 0, H = 0;
+
+  function $(s) { return document.querySelector(s); }
+
+  /* --------------------------------------------------------------- load -- */
+  fetch("ioaa-graph.json")
+    .then(function (r) {
+      if (!r.ok) throw new Error("payload " + r.status);
+      return r.json();
+    })
+    .then(boot)
+    .catch(function (err) {
+      $("#st-main").textContent = "Could not load the graph data (" + err.message + ").";
+    });
+
+  function loadLevel(key) {
+    state.level = key;
+    LV = DATA.levels[key];
+    var nf = DATA.node_fields, ef = DATA.edge_fields;
+    BY_ID = {}; adj = {};
+    N = LV.nodes.map(function (a, i) {
+      var o = { idx: i };
+      nf.forEach(function (k, j) { o[k] = a[j]; });
+      o.px = o.x; o.py = o.y;                  // published position
+      o.vx = 0; o.vy = 0;
+      o.deg = 0;
+      BY_ID[o.id] = o;
+      return o;
+    });
+    E = LV.edges.map(function (a) {
+      var o = {};
+      ef.forEach(function (k, j) { o[k] = a[j]; });
+      o.joint = 0; o.w = 0; o.p_ba = 0; o.p_ab = 0;
+      return o;
+    });
+    N.forEach(function (n) { adj[n.idx] = []; });
+    E.forEach(function (e) {
+      N[e.a].deg++; N[e.b].deg++;
+      adj[e.a].push({ j: e.b, e: e, rev: false, sup: e.support, prov: e.prov });
+      adj[e.b].push({ j: e.a, e: e, rev: true, sup: e.support, prov: e.prov });
+    });
+    recomputeSelection();
+    state.selected = null; state.hover = null;
+    $("#detail").hidden = true;
+    syncStatus();
+  }
+
+  function syncStatus() {
+    var shown = 0, hollow = 0, links = 0;
+    N.forEach(function (n) {
+      if (!visible(n)) return;
+      if (n.mass > 0) shown++; else hollow++;
+    });
+    E.forEach(function (e) {
+      if (e.joint > 0 && visible(N[e.a]) && visible(N[e.b])) links++;
+    });
+    var rn = DATA.meta.rounds.filter(function (_, i) { return state.rounds[i]; });
+    var en = DATA.meta.eras.filter(function (_, i) { return state.eras[i]; });
+    var allR = rn.length === DATA.meta.rounds.length;
+    var allE = en.length === DATA.meta.eras.length;
+    $("#st-main").innerHTML = "<b>" + shown + "</b> "
+      + (state.level === "topic" ? "topics"
+         : state.level === "content" ? "syllabus contents" : "syllabus sections")
+      + " tested &middot; <b>" + links + "</b> links &middot; "
+      + (allR ? "all rounds" : "<b>" + rn.join(" + ") + "</b>") + ", "
+      + (allE ? DATA.meta.years[0] + "\u2013" + DATA.meta.years[1]
+              : "<b>" + en.join(" + ").replace(/-/g, "\u2013") + "</b>");
+    $("#st-ring").innerHTML = (hollow
+      ? "<b>" + hollow + "</b> syllabus topics untested here (hollow)"
+      : "every syllabus topic here is tested")
+      + (LV.provisional && state.showProv
+         ? " &middot; dashed links rest on a single exam part" : "");
+    $("#btn-unex").style.display = (hollow || !state.showUnexamined) ? "" : "none";
+    $("#btn-prov").style.display = LV.provisional ? "" : "none";
+    $("#level-hint").textContent = state.level === "concept"
+      ? "Individual concepts. Dashed links rest on a single exam part and are excluded from the statistics."
+      : (state.level === "subsection"
+         ? "The syllabus's named topics. Rebuilt from the exam parts, not blurred from the concept map."
+         : "The syllabus's top-level sections, the coarsest honest view.");
+  }
+
+  function boot(d) {
+    DATA = d;
+    state.rounds = d.meta.rounds.map(function () { return true; });
+    state.eras = d.meta.eras.map(function () { return true; });
+    loadLevel(d.level_order.indexOf("topic") !== -1 ? "topic" : d.level_order[0]);
+    buildLegend(); buildLevels(); buildChips(); buildFacts();
+    buildOverlay(); fillAbout(); wireThreshold();
+    resize(); fit(); draw();
+  }
+
+  /* ------------------------------------------------------------- shares -- */
+  /* Node mass and edge joint mass are additive over exam parts, so any
+     combination of rounds and periods is just a sum over the matching cells.
+     Shares and the directed relevance p(B|A) are ratios and are derived from
+     those sums here, never summed directly. */
+  function recomputeSelection() {
+    var nE = DATA.meta.eras.length;
+    ACTIVE = [];
+    DATA.meta.rounds.forEach(function (_, ri) {
+      if (!state.rounds[ri]) return;
+      DATA.meta.eras.forEach(function (__, ei) {
+        if (state.eras[ei]) ACTIVE.push(ri * nE + ei);
+      });
+    });
+    WSEL = 0;
+    ACTIVE.forEach(function (c) { WSEL += DATA.meta.cell_totals[c] || 0; });
+    if (!WSEL) WSEL = 1;
+
+    for (var i = 0; i < N.length; i++) {
+      var m = 0, cl = N[i].cells;
+      for (var j = 0; j < ACTIVE.length; j++) m += cl[ACTIVE[j]] || 0;
+      N[i].mass = m;
+      N[i].share = m / WSEL;
+    }
+    for (var k = 0; k < E.length; k++) {
+      var e = E[k], jm = 0, ec = e.cells;
+      for (var q = 0; q < ACTIVE.length; q++) jm += ec[ACTIVE[q]] || 0;
+      e.joint = jm;
+      var ma = N[e.a].mass, mb = N[e.b].mass;
+      e.p_ba = ma > 0 ? jm / ma : 0;
+      e.p_ab = mb > 0 ? jm / mb : 0;
+      e.w = (e.p_ba + e.p_ab) / 2;
+    }
+    for (var a = 0; a < N.length; a++) {
+      adj[a].forEach(function (l) {
+        var ed = l.e;
+        l.out = (l.rev ? ed.p_ab : ed.p_ba);
+        l.back = (l.rev ? ed.p_ba : ed.p_ab);
+        l.w = ed.w; l.joint = ed.joint;
+      });
+      adj[a].sort(function (x, y) { return y.out - x.out; });
+    }
+  }
+
+  function shareOf(n) { return n.share; }
+  function maxShare() {
+    var m = 0;
+    N.forEach(function (n) { if (visible(n)) m = Math.max(m, n.share); });
+    return m || 1;
+  }
+  function visible(n) {
+    if (!state.showMethods && n.method) return false;
+    if (state.isolate && state.isolate.indexOf(n.section) === -1) return false;
+    if (n.mass <= 0) return state.showUnexamined && !state.isolate ? true : false;
+    if (state.minShare > 0 && n.share < state.minShare) return false;
+    return true;
+  }
+  function radius(n, mx) {
+    var s = shareOf(n);
+    if (s <= 0) return 2.0;
+    return 2.6 + 15 * Math.sqrt(s / mx);       // area tracks share
+  }
+
+  /* ------------------------------------------------------------ geometry - */
+  function resize() {
+    var r = canvas.getBoundingClientRect();
+    W = r.width; H = r.height;
+    canvas.width = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  function fit() {
+    var pad = 84, left = W > 1080 ? 268 : 24, right = 24;
+    var w = W - left - right, h = H - pad - 74;
+    view.k = Math.min(w, h) * 0.94;
+    view.x = left + (w - view.k) / 2;
+    view.y = pad + (h - view.k) / 2;
+  }
+  function sx(n) { return n.px * view.k + view.x; }
+  function sy(n) { return n.py * view.k + view.y; }
+
+  /* ---------------------------------------------------------------- draw - */
+  var raf = null;
+  function schedule() { if (!raf) raf = requestAnimationFrame(function () { raf = null; draw(); }); }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var mx = maxShare();
+    var sel = state.selected, hov = state.hover;
+    var focus = sel !== null ? sel : hov;
+    var near = {};
+    if (focus !== null) {
+      near[focus] = true;
+      adj[focus].forEach(function (l) { near[l.j] = true; });
+    }
+    var qlist = state.q ? matches(state.q) : null;
+    var qset = {};
+    if (qlist) qlist.forEach(function (n) { qset[n.idx] = true; });
+
+    /* edges */
+    ctx.lineCap = "round";
+    var edgeCol = cssVar("--edge");
+    for (var i = 0; i < E.length; i++) {
+      var e = E[i], a = N[e.a], b = N[e.b];
+      if (!visible(a) || !visible(b)) continue;
+      if (e.prov && !state.showProv) continue;
+      if (e.joint <= 0) continue;
+      var lit = focus !== null && (e.a === focus || e.b === focus);
+      var muted = focus !== null && !lit;
+      ctx.setLineDash(e.prov ? [2, 3] : []);
+      ctx.beginPath();
+      ctx.moveTo(sx(a), sy(a)); ctx.lineTo(sx(b), sy(b));
+      ctx.lineWidth = lit ? Math.max(1, e.w * 7) : Math.max(0.4, e.w * 3.4);
+      ctx.strokeStyle = lit ? secColor[N[focus].section] : edgeCol;
+      ctx.globalAlpha = (lit ? 0.85 : (muted ? 0.05 : 0.30)) * (e.prov ? 0.7 : 1);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+
+    /* nodes */
+    var bg = cssVar("--bg");
+    for (var j = 0; j < N.length; j++) {
+      var n = N[j];
+      if (!visible(n)) continue;
+      var r = radius(n, mx), X = sx(n), Y = sy(n);
+      var dim = (focus !== null && !near[n.idx]) || (qlist && !qset[n.idx]);
+      ctx.globalAlpha = dim ? 0.16 : 1;
+      ctx.beginPath(); ctx.arc(X, Y, r, 0, 6.2832);
+      if (n.mass <= 0) {                       // in the syllabus, never examined
+        ctx.lineWidth = 1.1; ctx.strokeStyle = secColor[n.section];
+        ctx.globalAlpha *= 0.65; ctx.stroke();
+        ctx.globalAlpha = dim ? 0.16 : 1;
+        continue;
+      }
+      ctx.fillStyle = secColor[n.section];
+      ctx.fill();
+      if (!n.syllabus && !dim) {               // off-syllabus gets a ring
+        ctx.lineWidth = 1.4; ctx.strokeStyle = bg; ctx.stroke();
+        ctx.beginPath(); ctx.arc(X, Y, r + 2.4, 0, 6.2832);
+        ctx.lineWidth = 1; ctx.strokeStyle = secColor[n.section];
+        ctx.globalAlpha = 0.55; ctx.stroke(); ctx.globalAlpha = 1;
+      }
+      if (n.idx === focus) {
+        ctx.beginPath(); ctx.arc(X, Y, r + 4, 0, 6.2832);
+        ctx.lineWidth = 1.6; ctx.strokeStyle = cssVar("--ink"); ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    /* labels: the biggest concepts, plus whatever is in focus */
+    var order = N.filter(visible).sort(function (p, q) { return shareOf(q) - shareOf(p); });
+    var cap = view.k > 900 ? 34 : 20;
+    var show = order.slice(0, cap);
+    if (focus !== null) {
+      show = show.filter(function (n) { return n.idx !== focus; });
+      show.unshift(N[focus]);
+      adj[focus].slice(0, 6).forEach(function (l) {
+        if (visible(N[l.j]) && show.indexOf(N[l.j]) === -1) show.push(N[l.j]);
+      });
+    }
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    var placed = [];
+    show.forEach(function (n) {
+      var r = radius(n, mx), X = sx(n), Y = sy(n) + r + 3.5;
+      var size = n.idx === focus ? 12.5 : (shareOf(n) > 0.04 ? 11.5 : 10.5);
+      ctx.font = (n.idx === focus ? "600 " : "500 ") + size + "px " + cssVar("--font");
+      var t = n.name.length > 34 ? n.name.slice(0, 32) + "\u2026" : n.name;
+      var w = ctx.measureText(t).width, box = [X - w / 2 - 2, Y - 1, w + 4, size + 3];
+      var clash = placed.some(function (p) {
+        return !(box[0] > p[0] + p[2] || box[0] + box[2] < p[0] ||
+                 box[1] > p[1] + p[3] || box[1] + box[3] < p[1]);
+      });
+      if (clash && n.idx !== focus) return;
+      placed.push(box);
+      ctx.globalAlpha = 0.78; ctx.fillStyle = bg;
+      ctx.fillRect(box[0], box[1], box[2], box[3]);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = n.idx === focus ? cssVar("--ink") : cssVar("--ink-dim");
+      ctx.fillText(t, X, Y);
+    });
+  }
+
+  /* ------------------------------------------------------- spring relax -- */
+  /* The published layout is the resting state. Dragging a node lets its
+     neighbourhood follow, then everything eases back, so the map feels
+     physical without ever drifting away from the geometry it was solved in. */
+  var relaxing = false, dragging = null;
+  function relax() {
+    if (!relaxing) return;
+    var moved = 0;
+    for (var i = 0; i < E.length; i++) {
+      var e = E[i], a = N[e.a], b = N[e.b];
+      var dx = b.px - a.px, dy = b.py - a.py;
+      var rest = Math.hypot(b.x - a.x, b.y - a.y);
+      var d = Math.hypot(dx, dy) || 1e-6;
+      var f = (d - rest) * 0.06 * Math.min(1, e.w * 6);
+      var ux = dx / d * f, uy = dy / d * f;
+      if (a !== dragging) { a.vx += ux; a.vy += uy; }
+      if (b !== dragging) { b.vx -= ux; b.vy -= uy; }
+    }
+    for (var j = 0; j < N.length; j++) {
+      var n = N[j];
+      if (n === dragging) continue;
+      n.vx += (n.x - n.px) * 0.05;             // pull home
+      n.vy += (n.y - n.py) * 0.05;
+      n.vx *= 0.82; n.vy *= 0.82;
+      n.px += n.vx; n.py += n.vy;
+      moved += Math.abs(n.vx) + Math.abs(n.vy);
+    }
+    draw();
+    if (moved < 1e-4 && !dragging) { relaxing = false; return; }
+    requestAnimationFrame(relax);
+  }
+  function startRelax() { if (!relaxing) { relaxing = true; requestAnimationFrame(relax); } }
+
+  /* ------------------------------------------------------------ picking -- */
+  function pick(mx_, my_) {
+    var mx = maxShare(), best = null, bd = 1e9;
+    for (var i = N.length - 1; i >= 0; i--) {
+      var n = N[i];
+      if (!visible(n)) continue;
+      var r = radius(n, mx) + 4;
+      var dx = sx(n) - mx_, dy = sy(n) - my_, d = dx * dx + dy * dy;
+      if (d < r * r && d < bd) { bd = d; best = n; }
+    }
+    return best;
+  }
+
+  /* ------------------------------------------------------------ pointer -- */
+  var drag = null;
+  canvas.addEventListener("pointerdown", function (ev) {
+    canvas.setPointerCapture(ev.pointerId);
+    var n = pick(ev.offsetX, ev.offsetY);
+    if (n) {
+      dragging = n;
+      drag = { kind: "node", n: n, ox: ev.offsetX, oy: ev.offsetY, moved: false };
+    } else {
+      drag = { kind: "pan", x: ev.offsetX - view.x, y: ev.offsetY - view.y, moved: false };
+      canvas.classList.add("grabbing");
+    }
+  });
+  canvas.addEventListener("pointermove", function (ev) {
+    if (drag) {
+      drag.moved = true;
+      if (drag.kind === "pan") {
+        view.x = ev.offsetX - drag.x; view.y = ev.offsetY - drag.y; schedule();
+      } else {
+        drag.n.px = (ev.offsetX - view.x) / view.k;
+        drag.n.py = (ev.offsetY - view.y) / view.k;
+        startRelax();
+      }
+      return;
+    }
+    var n = pick(ev.offsetX, ev.offsetY);
+    var id = n ? n.idx : null;
+    if (id !== state.hover) { state.hover = id; schedule(); }
+    var tip = $("#tip");
+    if (n && state.selected === null) {
+      tip.hidden = false;
+      tip.innerHTML = esc(n.name) + "<span class='s'>" + fmtPc(shareOf(n))
+        + " of marks &middot; " + n.units + " parts</span>";
+      var tw = tip.offsetWidth;
+      tip.style.left = Math.min(ev.clientX + 12, window.innerWidth - tw - 10) + "px";
+      tip.style.top = (ev.clientY + 14) + "px";
+    } else { tip.hidden = true; }
+    canvas.style.cursor = n ? "pointer" : "grab";
+  });
+  function endDrag(ev) {
+    if (drag && drag.kind === "node" && !drag.moved) select(drag.n.idx);
+    else if (drag && drag.kind === "pan" && !drag.moved) select(null);
+    if (drag && drag.kind === "node" && !ev.shiftKey) {
+      dragging = null; startRelax();
+    } else if (drag && drag.kind === "node") {
+      drag.n.x = drag.n.px; drag.n.y = drag.n.py;   // shift-release pins it
+      dragging = null; startRelax();
+    }
+    drag = null; canvas.classList.remove("grabbing");
+  }
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", function () { drag = null; dragging = null; });
+  canvas.addEventListener("wheel", function (ev) {
+    ev.preventDefault();
+    var f = Math.exp(-ev.deltaY * 0.0014);
+    var k2 = Math.max(120, Math.min(14000, view.k * f));
+    f = k2 / view.k;
+    view.x = ev.offsetX - (ev.offsetX - view.x) * f;
+    view.y = ev.offsetY - (ev.offsetY - view.y) * f;
+    view.k = k2; schedule();
+  }, { passive: false });
+
+  /* ------------------------------------------------------------- select -- */
+  function select(idx) {
+    state.selected = idx;
+    var d = $("#detail");
+    if (idx === null) { d.hidden = true; schedule(); return; }
+    var n = N[idx];
+    $("#tip").hidden = true;
+    $("#d-sw").style.background = secColor[n.section];
+    $("#d-sec").textContent = n.content
+      + (n.q ? "  \u00B7  qualitative only" : "")
+      + (n.syllabus ? "" : "  \u00B7  outside the syllabus");
+    $("#d-name").textContent = n.name;
+    $("#d-id").textContent = n.id;
+    $("#d-share").innerHTML = n.mass > 0 ? fmtPc(n.share) : "\u2014";
+    $("#d-units").textContent = n.units;
+    $("#d-deg").textContent = n.deg;
+
+    $("#d-trend").innerHTML = breakdown(n);
+
+    var ul = $("#d-links");
+    ul.innerHTML = "";
+    var links = adj[idx].filter(function (l) {
+      return visible(N[l.j]) && l.joint > 0 && (!l.prov || state.showProv);
+    }).slice(0, 8);
+    if (!links.length) {
+      ul.innerHTML = "<li style='color:var(--ink-faint);font-size:var(--fs-micro)'>"
+        + "Nothing is examined alongside this in the current selection.</li>";
+    }
+    links.forEach(function (l) {
+      var m = N[l.j];
+      var li = document.createElement("li");
+      li.innerHTML =
+        "<div class='head'><span class='sw' style='background:" + secColor[m.section] + "'></span>"
+        + "<span class='nm' data-go='" + m.idx + "'>" + esc(m.name) + "</span>"
+        + "<span class='pc'>" + Math.round(l.out * 100) + "%</span></div>"
+        + "<div class='bar'><i style='width:" + Math.round(l.out * 100) + "%;background:"
+        + secColor[m.section] + "'></i></div>"
+        + "<div class='gloss'>" + Math.round(l.out * 100) + "% of the marks testing "
+        + esc(n.name.toLowerCase()) + " also need this"
+        + (Math.abs(l.out - l.back) > 0.12
+            ? "; the other way round it is " + Math.round(l.back * 100) + "%." : ".")
+        + " <span class='num'>" + l.sup + "</span> part"
+        + (l.sup === 1 ? ", so this link is provisional" : "s") + ".</div>";
+      ul.appendChild(li);
+    });
+    ul.querySelectorAll("[data-go]").forEach(function (el) {
+      el.addEventListener("click", function () { select(+el.getAttribute("data-go")); });
+    });
+    d.hidden = false;
+    d.scrollTop = 0;
+    schedule();
+  }
+  /* Where a topic's marks actually sit: which round, and which period. Both
+     are read straight off the cells, so they always match the current view. */
+  function breakdown(n) {
+    if (n.mass <= 0) {
+      return "<p style='font-size:var(--fs-micro);color:var(--ink-faint);"
+        + "line-height:1.5'>This topic is in the official syllabus but no exam "
+        + "part in the current selection tests it.</p>";
+    }
+    var nE = DATA.meta.eras.length;
+    function bar(labels, kind) {
+      var vals = labels.map(function (_, i) {
+        var t = 0;
+        ACTIVE.forEach(function (c) {
+          if (kind === "round" ? Math.floor(c / nE) === i : (c % nE) === i)
+            t += n.cells[c] || 0;
+        });
+        return t;
+      });
+      var tot = vals.reduce(function (a, b) { return a + b; }, 0) || 1;
+      return "<div class='mini'>" + labels.map(function (L, i) {
+        if (!vals[i]) return "";
+        return "<div class='mrow'><span class='ml'>"
+          + esc(L.replace(/-/g, "\u2013")) + "</span>"
+          + "<span class='mb'><i style='width:" + (vals[i] / tot * 100).toFixed(1)
+          + "%;background:" + secColor[n.section] + "'></i></span>"
+          + "<span class='mv'>" + Math.round(vals[i] / tot * 100) + "%</span></div>";
+      }).join("") + "</div>";
+    }
+    return "<div class='caps' style='margin-top:var(--s3)'>Marks by round</div>"
+      + bar(DATA.meta.rounds, "round")
+      + "<div class='caps' style='margin-top:var(--s3)'>Marks by period</div>"
+      + bar(DATA.meta.eras, "era");
+  }
+
+  $("#detail-close").addEventListener("click", function () { select(null); });
+
+  /* ------------------------------------------------------------- legend -- */
+  function buildLegend() {
+    var counts = {};
+    N.forEach(function (n) { counts[n.section] = (counts[n.section] || 0) + 1; });
+    var el = $("#legend");
+    DATA.sections.forEach(function (s) {
+      var b = document.createElement("button");
+      b.setAttribute("aria-pressed", "false");
+      b.dataset.sec = s.id;
+      b.innerHTML = "<span class='sw' style='background:" + secColor[s.id] + "'></span>"
+        + "<span class='nm'>" + esc(s.name) + "</span>"
+        + "<span class='ct'>" + (counts[s.id] || 0) + "</span>";
+      b.dataset.sec = s.id;
+      b.addEventListener("click", function (ev) {
+        var cur = state.isolate || [];
+        if (ev.shiftKey) {
+          var i = cur.indexOf(s.id);
+          cur = i === -1 ? cur.concat([s.id]) : cur.filter(function (x) { return x !== s.id; });
+        } else {
+          cur = (cur.length === 1 && cur[0] === s.id) ? [] : [s.id];
+        }
+        state.isolate = cur.length ? cur : null;
+        syncLegend(); syncStatus(); schedule();
+      });
+      el.appendChild(b);
+    });
+  }
+  function buildLegendCounts() {
+    var counts = {};
+    N.forEach(function (n) {
+      if (n.mass > 0) counts[n.section] = (counts[n.section] || 0) + 1;
+    });
+    $("#legend").querySelectorAll("button").forEach(function (b) {
+      var c = b.querySelector(".ct");
+      if (c) c.textContent = counts[b.dataset.sec] || 0;
+    });
+  }
+
+  function syncLegend() {
+    $("#legend").querySelectorAll("button").forEach(function (b) {
+      var on = state.isolate && state.isolate.indexOf(b.dataset.sec) !== -1;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.classList.toggle("dim", !!state.isolate && !on);
+    });
+  }
+
+  /* -------------------------------------------------------------- levels - */
+  function buildLevels() {
+    var el = $("#levels");
+    DATA.level_order.forEach(function (key) {
+      var L = DATA.levels[key];
+      var b = document.createElement("button");
+      b.setAttribute("aria-pressed", key === state.level ? "true" : "false");
+      b.dataset.level = key;
+      b.innerHTML = "<span class='yr'>" + esc(L.label) + "</span><span class='u'>"
+        + L.n_nodes + "</span>";
+      b.addEventListener("click", function () {
+        if (state.level === key) return;
+        loadLevel(key);
+        el.querySelectorAll("button").forEach(function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        buildLegendCounts(); syncStatus(); fit(); schedule();
+      });
+      el.appendChild(b);
+    });
+  }
+
+  function wireThreshold() {
+    var sl = $("#thresh"), out = $("#thresh-v");
+    sl.addEventListener("input", function () {
+      state.minShare = (+sl.value) / 1000;        // 0 to 4% of marks
+      out.textContent = (state.minShare * 100).toFixed(1).replace(/\.0$/, "") + "%";
+      if (state.selected !== null && !visible(N[state.selected])) select(null);
+      schedule();
+    });
+  }
+
+  /* ----------------------------------------------------- rounds + periods - */
+  function cellWeight(kind, i) {
+    var nE = DATA.meta.eras.length, w = 0;
+    DATA.meta.cell_totals.forEach(function (v, c) {
+      if (kind === "round" ? Math.floor(c / nE) === i : (c % nE) === i) w += v;
+    });
+    return w;
+  }
+
+  function buildChipGroup(host, labels, flags, kind) {
+    labels.forEach(function (name, i) {
+      var b = document.createElement("button");
+      b.setAttribute("aria-pressed", flags[i] ? "true" : "false");
+      b.dataset.i = i;
+      b.innerHTML = "<span class='yr'>" + esc(name.replace(/-/g, "\u2013"))
+        + "</span><span class='u'>" + Math.round(cellWeight(kind, i) /
+            DATA.meta.cell_totals.reduce(function (x, y) { return x + y; }, 0)
+            * 100) + "%</span>";
+      b.addEventListener("click", function () {
+        flags[i] = !flags[i];
+        if (!flags.some(Boolean)) flags[i] = true;      // never empty
+        host.querySelectorAll("button[data-i]").forEach(function (o) {
+          o.setAttribute("aria-pressed", flags[+o.dataset.i] ? "true" : "false");
+        });
+        applySelection();
+      });
+      host.appendChild(b);
+    });
+    var all = document.createElement("button");
+    all.className = "all";
+    all.textContent = "select all";
+    all.addEventListener("click", function () {
+      for (var i = 0; i < flags.length; i++) flags[i] = true;
+      host.querySelectorAll("button[data-i]").forEach(function (o) {
+        o.setAttribute("aria-pressed", "true");
+      });
+      applySelection();
+    });
+    host.appendChild(all);
+  }
+
+  function applySelection() {
+    recomputeSelection();
+    if (state.selected !== null) {
+      if (!visible(N[state.selected])) select(null);
+      else select(state.selected);
+    }
+    syncStatus(); schedule();
+  }
+
+  function buildChips() {
+    buildChipGroup($("#rounds"), DATA.meta.rounds, state.rounds, "round");
+    buildChipGroup($("#eras"), DATA.meta.eras, state.eras, "era");
+  }
+
+  /* -------------------------------------------------------------- facts -- */
+  function buildFacts() {
+    var a = DATA.analysis, m = DATA.meta;
+    var rows = [
+      ["Problems", m.problems],
+      ["Scored parts", m.units],
+      ["Concepts", m.n_nodes],
+      ["Links", m.n_edges],
+      ["Links inside a section", fmtPc(a.within_section_edge_share)],
+      ["Same, if rewired", fmtPc(a.null_mean)],
+      ["Off-syllabus marks", fmtPc(a.off_syllabus.overall_share)],
+      ["Method marks", fmtPc(a.method_load.overall_share)]
+    ];
+    $("#facts").innerHTML = rows.map(function (r) {
+      return "<dt>" + r[0] + "</dt><dd>" + r[1] + "</dd>";
+    }).join("");
+  }
+
+  /* ------------------------------------------------------------ overlay -- */
+  function buildOverlay() {
+    var box = $("#overlay-box");
+    if (!DATA.overlays || !DATA.overlays.length) {
+      box.innerHTML = "<div class='overlay-empty'>No second corpus is loaded yet."
+        + " A tagged exam or textbook dropped into <code>data/external/</code>"
+        + " is projected onto this map without moving it, and its coverage of"
+        + " IOAA appears here.</div>";
+      return;
+    }
+    box.innerHTML = DATA.overlays.map(function (o) {
+      return "<div style='margin-bottom:var(--s2)'><div style='font-size:var(--fs-small);"
+        + "font-weight:500'>" + esc(o.name) + "</div>"
+        + "<dl class='facts'><dt>IOAA marks covered</dt><dd>" + fmtPc(o.coverage) + "</dd>"
+        + "<dt>Concepts reached</dt><dd>" + fmtPc(o.reach) + "</dd>"
+        + "<dt>Links covered</dt><dd>" + fmtPc(o.edge_coverage) + "</dd></dl></div>";
+    }).join("");
+  }
+
+  /* -------------------------------------------------------------- about -- */
+  function fillAbout() {
+    var a = DATA.analysis;
+    $("#a-units").textContent = DATA.meta.units;
+    var top = DATA.levels[DATA.level_order[0]];
+    $("#a-nodes").textContent = DATA.meta.n_official_topics;
+    $("#a-prov").textContent = top ? top.provisional : 0;
+    var un = $("#a-unex"); if (un) un.textContent = DATA.meta.n_unexamined_topics;
+    var os = $("#a-offsyl"); if (os) os.textContent = DATA.meta.n_off_syllabus_concepts;
+    $("#a-within").textContent = fmtPc(a.within_section_edge_share);
+    $("#a-null").textContent = fmtPc(a.null_mean);
+    $("#a-z").textContent = Math.round(a.z_score);
+    $("#a-early").textContent = fmtPc(a.off_syllabus.early_2007_2012, 1);
+    $("#a-late").textContent = fmtPc(a.off_syllabus.late_2019_2025, 1);
+    var tb = $("#a-movers tbody"), rows = [];
+    a.risen.slice(0, 5).forEach(function (r) { rows.push(r); });
+    a.faded.slice(0, 5).forEach(function (r) { rows.push(r); });
+    tb.innerHTML = rows.map(function (r) {
+      var sign = r.delta > 0 ? "+" : "\u2212";
+      return "<tr><td>" + esc(r.name) + "</td><td class='n'>" + fmtPc(r.early, 1)
+        + "</td><td class='n'>" + fmtPc(r.late, 1) + "</td><td class='n' style='color:"
+        + (r.delta > 0 ? "var(--c-CO)" : "var(--c-ST)") + "'>" + sign
+        + Math.abs(r.delta * 100).toFixed(1) + " pp</td></tr>";
+    }).join("");
+  }
+
+  /* ------------------------------------------------------------- search -- */
+  function matches(q) {
+    q = q.toLowerCase();
+    return N.filter(function (n) {
+      return visible(n) && (n.name.toLowerCase().indexOf(q) !== -1 ||
+                            n.id.indexOf(q) !== -1 ||
+                            n.content.toLowerCase().indexOf(q) !== -1);
+    }).sort(function (a, b) { return b.share - a.share; });
+  }
+  var qIn = $("#q"), res = $("#results");
+  qIn.addEventListener("input", function () {
+    state.q = qIn.value.trim();
+    if (!state.q) { res.hidden = true; schedule(); return; }
+    var list = matches(state.q).slice(0, 12);
+    res.innerHTML = list.map(function (n) {
+      return "<li data-i='" + n.idx + "'><span class='sw' style='background:"
+        + secColor[n.section] + "'></span><span class='nm'>" + esc(n.name)
+        + "</span><span class='ct'>" + fmtPc(n.share) + "</span></li>";
+    }).join("") || "<li style='color:var(--ink-faint)'>Nothing matches.</li>";
+    res.hidden = false;
+    res.querySelectorAll("li[data-i]").forEach(function (li) {
+      li.addEventListener("click", function () {
+        goTo(+li.dataset.i); res.hidden = true; qIn.value = ""; state.q = "";
+      });
+    });
+    schedule();
+  });
+  qIn.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") { qIn.value = ""; state.q = ""; res.hidden = true; schedule(); }
+    if (ev.key === "Enter") {
+      var first = res.querySelector("li[data-i]");
+      if (first) { goTo(+first.dataset.i); res.hidden = true; qIn.value = ""; state.q = ""; }
+    }
+  });
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.closest(".search")) res.hidden = true;
+  });
+
+  function goTo(idx) {
+    var n = N[idx];
+    view.k = Math.max(view.k, 1600);
+    view.x = W * 0.5 - n.px * view.k;
+    view.y = H * 0.5 - n.py * view.k;
+    select(idx);
+  }
+
+  /* ------------------------------------------------------------ controls - */
+  $("#btn-methods").addEventListener("click", function () {
+    state.showMethods = !state.showMethods;
+    this.setAttribute("aria-pressed", state.showMethods ? "true" : "false");
+    if (state.selected !== null && !visible(N[state.selected])) select(null);
+    schedule();
+  });
+  $("#btn-unex").addEventListener("click", function () {
+    state.showUnexamined = !state.showUnexamined;
+    this.setAttribute("aria-pressed", state.showUnexamined ? "true" : "false");
+    if (state.selected !== null && !visible(N[state.selected])) select(null);
+    syncStatus(); schedule();
+  });
+  $("#btn-prov").addEventListener("click", function () {
+    state.showProv = !state.showProv;
+    this.setAttribute("aria-pressed", state.showProv ? "true" : "false");
+    syncStatus(); schedule();
+  });
+  $("#btn-reset").addEventListener("click", function () {
+    N.forEach(function (n) { n.px = n.x; n.py = n.y; n.vx = n.vy = 0; });
+    state.isolate = null; state.q = ""; qIn.value = "";
+    for (var i = 0; i < state.rounds.length; i++) state.rounds[i] = true;
+    for (var j = 0; j < state.eras.length; j++) state.eras[j] = true;
+    $("#rounds").querySelectorAll("button[data-i]").forEach(function (b) {
+      b.setAttribute("aria-pressed", "true"); });
+    $("#eras").querySelectorAll("button[data-i]").forEach(function (b) {
+      b.setAttribute("aria-pressed", "true"); });
+    recomputeSelection();
+    state.minShare = 0; $("#thresh").value = 0; $("#thresh-v").textContent = "0%";
+    state.showProv = true; $("#btn-prov").setAttribute("aria-pressed", "true");
+    state.showUnexamined = true; $("#btn-unex").setAttribute("aria-pressed", "true");
+    state.showMethods = true; $("#btn-methods").setAttribute("aria-pressed", "true");
+    syncLegend(); buildLegendCounts(); syncStatus();
+    select(null); fit(); schedule();
+  });
+  $("#btn-theme").addEventListener("click", function () {
+    var cur = document.documentElement.getAttribute("data-theme");
+    var isDark = cur ? cur === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+    readColors();
+    $("#legend").querySelectorAll(".sw").forEach(function (el, i) {
+      el.style.background = secColor[DATA.sections[i].id];
+    });
+    if (state.selected !== null) select(state.selected);
+    schedule();
+  });
+  $("#btn-about").addEventListener("click", function () { $("#about").hidden = false; });
+  $("#about-close").addEventListener("click", function () { $("#about").hidden = true; });
+  $("#about").addEventListener("click", function (ev) {
+    if (ev.target === this) this.hidden = true;
+  });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") { $("#about").hidden = true; select(null); }
+    if (ev.target.tagName === "INPUT") return;
+    if (ev.key === "/") { ev.preventDefault(); qIn.focus(); }
+    if (ev.key === "r") $("#btn-reset").click();
+    if (ev.key === "m") $("#btn-methods").click();
+    if (ev.key === "u") $("#btn-prov").click();
+    if (ev.key === "?") $("#about").hidden = false;
+  });
+  window.addEventListener("resize", function () { resize(); fit(); schedule(); });
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+    readColors(); schedule();
+  });
+
+  /* --------------------------------------------------------------- utils - */
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function fmtPc(v, dp) {
+    if (v === null || v === undefined) return "\u2014";
+    var d = dp === undefined ? (v < 0.01 ? 2 : 1) : dp;
+    return (v * 100).toFixed(d) + "%";
+  }
+})();
+</script>
