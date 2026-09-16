@@ -1,7 +1,7 @@
-<title>IOAA Concept Atlas</title>
+<title>IOAA Knowledge Graph</title>
 <style>
 /* ===========================================================================
-   IOAA Concept Atlas — styled after arXiv.
+   IOAA Knowledge Graph, styled after arXiv.
    Palette and font stack are arXiv's own: Cornell red #b31b1b, link blue
    #046baf, and 'Lucida Grande' sans throughout. arXiv loads no webfont and
    sets one family on body that everything inherits, including paper titles;
@@ -219,7 +219,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
 </style>
 
 <div id="bar"><div class="wrap">
-  <span class="mark">IOAA Concept Atlas</span>
+  <span class="mark">IOAA Knowledge Graph</span>
   <span class="crumbs">olympiad&nbsp;analysis<span>&gt;</span>concept&nbsp;graph<span>&gt;</span>2007&ndash;2025</span>
   <span class="right"><a href="https://github.com/seratsaad/ioaa-knowledge-graph">source</a></span>
 </div></div>
@@ -227,10 +227,11 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
 <div class="wrap">
 
   <div id="title">
-    <h1>What the IOAA actually tests</h1>
-    <p class="sub">Every scored part of the International Olympiad on Astronomy
-      and Astrophysics, 2007&ndash;2025, placed against the topics the official
-      syllabus lists and linked by what gets examined together.</p>
+    <h1>IOAA Knowledge Graph</h1>
+    <p class="sub">Hi everyone. We went through every problem the International
+      Olympiad on Astronomy and Astrophysics has set between 2007 and 2025,
+      worked out what each one asks you to know, and drew the result as a map.
+      Explore it below, or read how we built it further down.</p>
     <p class="byline">Serat Saad, Fahim Rajit Hossain
       <span style="color:var(--rule-2)">&nbsp;|&nbsp;</span>
       <b>402 problems, 800 scored parts, 175 syllabus topics</b></p>
@@ -278,8 +279,9 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
         <div id="side-default">
           <h2>Syllabus section</h2>
           <div id="legend"></div>
-          <p class="note">Click to isolate a section, shift-click to add.
-             Grey is mathematical method rather than astronomy.</p>
+          <p class="note">Click a section to show it alone, shift-click to add
+             more. We colour mathematical method grey to set it apart from
+             astronomy.</p>
           <hr>
           <h2>The exam</h2>
           <table class="data" id="facts" style="width:100%"></table>
@@ -305,139 +307,146 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     <figcaption>
       <span id="st-main"></span><span class="sep">|</span><span id="st-ring"></span>
       <span class="sep">|</span><span id="level-hint"></span>
-      <span class="sep">|</span>drag to pull, scroll to zoom, click a topic for detail
+      <span class="sep">|</span>Drag a topic to pull the map, scroll to zoom,
+      click a topic to see what we found
     </figcaption>
   </figure>
 
   <div class="doc" id="about">
-    <h2>How this map is built</h2>
+    <h2>How we built this</h2>
 
-    <p>Every IOAA paper from 2007 to 2025 is split into its smallest scorable
-      pieces &mdash; a sub-part where the marking scheme gives one, a whole
-      problem where it does not. That gives <strong id="a-units">800</strong>
-      units across 402 problems. Each was read together with its official
-      solution and tagged with the concepts a solver must actually <em>use</em>,
-      then placed against the <strong id="a-nodes">175</strong> topics the
-      official syllabus itself lists.</p>
+    <p>We split every IOAA paper into the smallest pieces the marking scheme
+      scores. Sometimes that means a sub-part and sometimes a whole problem. We
+      ended up with <strong id="a-units">800</strong> units across 402 problems.
+      We read each one next to its official solution, wrote down the concepts
+      you actually need to solve it, and matched those concepts to the
+      <strong id="a-nodes">175</strong> topics the official syllabus lists.</p>
 
-    <h3>1. Making marks comparable</h3>
-    <p>Raw marks cannot be compared across years: the 2007 median problem was
-      worth 2 points, the 2008 median 20. Each unit's marks are divided by its
-      year's total, so every olympiad contributes exactly 1.</p>
-    <div class="eq">w(u) = marks(u) &divide; &Sigma; marks over that year</div>
-    <p>Two gaps are handled openly. The 2012 and 2014 papers published no marks
-      and 2015 only three, so those problems take their year's median problem
-      value; problems with no per-part breakdown split their total evenly. Every
-      unit records which applied to it.</p>
+    <h3>1. We made the marks comparable</h3>
+    <p>Marks do not mean the same thing from one year to the next. The median
+      2007 problem carried 2 points and the median 2008 problem carried 20. So
+      we divide each unit's marks by the total for its year, which makes every
+      olympiad count the same.</p>
+    <div class="eq">w(u) = marks(u) &divide; total marks that year</div>
+    <p>Two years gave us trouble. The 2012 and 2014 papers never published marks
+      and 2015 published only three, so we give those problems the median value
+      for their year. Where a problem shows no per-part marks we split its total
+      evenly. We record which of these we did for every unit, so you can check
+      us.</p>
 
-    <h3>2. How heavily a topic is examined</h3>
-    <div class="eq">m(A) = &Sigma; w(u) over every unit that requires A</div>
-    <p>A dot's area tracks m(A). The percentage shown is that mass over the
-      total weight of the current selection. <strong>These shares do not sum to
-      100%.</strong> They sum to roughly 400%, because a unit requiring four
-      topics counts toward all four. Read a figure as coverage &mdash; this
-      fraction of the exam's marks sits in parts that need A &mdash; not as a
-      slice of a pie.</p>
+    <h3>2. How heavily we see a topic examined</h3>
+    <div class="eq">m(A) = sum of w(u) over every unit that needs A</div>
+    <p>The area of each dot follows m(A). The percentage we show divides that by
+      the total weight of whatever you have selected. <strong>These percentages
+      do not add up to 100.</strong> They add up to roughly 400, because a unit
+      that needs four topics counts toward all four. Read a number as coverage.
+      It tells you what share of the marks sit in parts that need that topic,
+      not what slice of a pie the topic owns.</p>
 
-    <h3>3. What gets examined together</h3>
-    <p>For a pair of topics, the joint mass is the weight of the units needing
-      both, and the link strength is a conditional probability:</p>
-    <div class="eq">n(A,B) = &Sigma; w(u) over units requiring both<br>
-      p(B|A) = n(A,B) &divide; m(A)   <em>&nbsp;&nbsp;of the marks that test A, this fraction also demand B</em></div>
-    <p>Direction matters, and the atlas keeps both readings: 36% of the marks on
-      orbital energy also need Kepler's first law, while only 20% run the other
-      way. Layout uses the mean of the two. Each pair also carries a
-      hub-corrected score, normalised pointwise mutual information, which asks
-      whether two topics co-occur more than their separate frequencies predict,
-      so a topic that appears everywhere cannot fake a strong link.</p>
-    <p>This is the exam analogue of the citation relevance used in the astro-ph
-      knowledge graph of Sun, Ting et al. (2024), where the question is what
-      fraction of the papers cited by work on A discuss B.</p>
+    <h3>3. How we link topics</h3>
+    <p>We link two topics when the same exam part needs both. We measure the
+      strength as a conditional probability and we keep the direction.</p>
+    <div class="eq">n(A,B) = sum of w(u) over units that need both<br>
+      p(B|A) = n(A,B) &divide; m(A)</div>
+    <p>Read that as the share of marks testing A that also demand B. Direction
+      matters, so we keep both readings. Of the marks on orbital energy, 36 per
+      cent also need Kepler's first law, while only 20 per cent run the other
+      way. For the layout we average the two. We also work out normalised
+      pointwise mutual information for every pair, which asks whether two topics
+      turn up together more often than their separate rates predict. That stops
+      a topic appearing everywhere from faking a strong link.</p>
+    <p>We took this measure from Sun, Ting et al. (2024), who built the astro-ph
+      knowledge graph by asking what share of the papers cited by work on A
+      discuss B. We ask the exam version of the same question.</p>
 
-    <h3>4. Which links survive</h3>
+    <h3>4. How we decide which links to keep</h3>
     <ol>
-      <li>A pair needs <strong>at least two separate exam parts</strong> behind
-        it, so one unusual question cannot invent a relationship.</li>
-      <li>Each topic keeps its <strong>six strongest</strong> links, plus any
-        above a floor of 0.05. The union is the edge set.</li>
-      <li>That leaves topics examined exactly once with no link at all. Rather
-        than drop them &mdash; they include main-sequence stars and radioactive
-        decay &mdash; each gets its strongest single-part links, drawn
-        <strong>dashed</strong> and excluded from every statistic here.
-        <span id="a-prov">199</span> links are provisional in that sense.</li>
+      <li>We need at least two separate exam parts behind a pair, so that one
+        unusual question cannot invent a relationship.</li>
+      <li>We keep the six strongest links for each topic, plus anything above a
+        floor of 0.05.</li>
+      <li>That leaves topics examined only once with no link at all. We did not
+        want to drop them, because they include main-sequence stars and
+        radioactive decay. So we draw their strongest single-part links as
+        dashed lines and keep those out of every number on this page.
+        <span id="a-prov">199</span> links are dashed for that reason.</li>
     </ol>
 
-    <h3>5. Position</h3>
-    <p>ForceAtlas2 with logarithmic attraction: linked topics pull together,
-      everything repels everything, heavier topics repel more. There are no axes
-      and no units. <strong>Only nearness means anything.</strong> Communities
-      come from the Leiden algorithm. Syllabus topics nothing examines have no
-      links to place them, so they sit beside their own Content group as hollow
-      rings &mdash; <span id="a-unex">31</span> of them have nothing in this
-      atlas mapping onto them, while <span id="a-offsyl">60</span> concepts the
-      exam tests have no home in the syllabus at all.</p>
+    <h3>5. How we placed everything</h3>
+    <p>We laid the map out with ForceAtlas2 using logarithmic attraction. Linked
+      topics pull together, everything pushes everything else apart, and heavier
+      topics push harder. There are no axes and no units here.
+      <strong>Only nearness means anything.</strong> We grouped topics with the
+      Leiden algorithm. Syllabus topics that nothing tests have no links to
+      place them, so we park each one next to its own Content group and draw it
+      as a hollow ring. <span id="a-unex">31</span> syllabus topics have nothing
+      in our map pointing at them, and <span id="a-offsyl">60</span> concepts
+      the exam tests have no home in the syllabus at all.</p>
 
-    <h3>6. Rounds and periods, live</h3>
-    <p>Mass is additive over exam parts, so every quantity is stored per
-      round-by-period cell and summed over whichever cells you leave selected.
-      Ratios are never summed; they are re-derived from those sums each time.
-      That is why theory alone, data analysis alone, or any mixture over any
-      span of years gives exact shares rather than approximations.</p>
+    <h3>6. Filter by round and period</h3>
+    <p>Mark weight adds up across exam parts, so we store every quantity per
+      round and period cell, then add up whichever cells you leave selected. We
+      never add ratios. We work them out again from those sums each time you
+      change something. That is why theory on its own, data analysis on its own,
+      or any mixture over any stretch of years gives you exact numbers rather
+      than an approximation.</p>
 
     <h2>Does the exam follow its own syllabus?</h2>
-    <p>The test is whether links stay inside a syllabus section more than chance
-      allows. Take the share of link weight whose two ends share a section, then
-      compare against 200 rewirings that keep every topic's degree and reshuffle
-      the weights, destroying syllabus structure and nothing else.</p>
+    <p>We wanted to know whether links stay inside a syllabus section more often
+      than chance allows. So we measured the share of link weight whose two ends
+      sit in the same section, then compared it against 200 rewirings that keep
+      every topic's degree and shuffle the weights. Rewiring breaks the syllabus
+      structure and leaves everything else alone.</p>
     <table class="data">
-      <tr><td>Observed, links inside one section</td><td class="n" id="a-within">40.8%</td></tr>
-      <tr><td>Rewired null</td><td class="n" id="a-null">11.4%</td></tr>
+      <tr><td>What we measured, links inside one section</td><td class="n" id="a-within">40.8%</td></tr>
+      <tr><td>What rewiring gives</td><td class="n" id="a-null">11.4%</td></tr>
       <tr class="hi"><td>z</td><td class="n" id="a-z">25.9</td></tr>
     </table>
-    <p>Counting the dashed links too gives 36.0% against the same null, so the
-      answer does not turn on that choice. Newman's assortativity on section
-      labels agrees at 0.27. The Leiden communities agree only weakly with the
-      syllabus sections, but that is a limitation of partition-matching scores
-      on overlapping structure, not evidence against the result above.</p>
+    <p>If we count the dashed links too we get 36.0 per cent against the same
+      rewired baseline, so the answer does not hinge on that choice. Newman's
+      assortativity on section labels agrees at 0.27. Our Leiden groups agree
+      only weakly with the syllabus sections, but that tells you more about how
+      partition-matching scores behave on overlapping structure than about the
+      result above.</p>
 
-    <h2>What it shows</h2>
-    <p>The exam follows its syllabus far more closely than chance. It departs in
-      one direction: relativity, compact objects and gravitational waves, none
-      of which the syllabus names. Their share of marks went from
-      <span id="a-early">1.6%</span> in 2007&ndash;2012 to
-      <span id="a-late">3.5%</span> in 2019&ndash;2025.</p>
-    <p>Between the same two periods, reading down the gainers and up the losers
-      tells the same story twice: IOAA has moved marks out of visual observation
-      and into quantitative data analysis.</p>
+    <h2>What we found</h2>
+    <p>The exam follows its syllabus much more closely than chance. It strays in
+      one direction, into relativity, compact objects and gravitational waves,
+      none of which the syllabus names. Those topics carried
+      <span id="a-early">1.6%</span> of marks between 2007 and 2012 and
+      <span id="a-late">3.5%</span> between 2019 and 2025.</p>
+    <p>Reading down the topics that gained and up the ones that lost tells us
+      the same thing twice. IOAA has moved marks out of visual observation and
+      into quantitative data analysis.</p>
     <table class="data" id="a-movers">
-      <thead><tr><th>Concept</th><th>2007&ndash;12</th><th>2019&ndash;25</th><th>Change</th></tr></thead>
+      <thead><tr><th>Topic</th><th>2007 to 2012</th><th>2019 to 2025</th><th>Change</th></tr></thead>
       <tbody></tbody>
     </table>
-    <p>One caveat sits underneath all of it. The syllabus was revised during the
-      period studied. The current version adds a Mathematical Methods and Tools
-      section including basic calculus, where the earlier text ruled calculus
-      out, so early papers are being read against a later document.</p>
+    <p>One caveat sits under all of this. The syllabus changed while we were
+      studying it. The current version adds a Mathematical Methods and Tools
+      section that includes basic calculus, where the older text ruled calculus
+      out, so we read early papers against a document written later.</p>
 
-    <h2>What this cannot tell you</h2>
+    <h2>What we cannot tell you</h2>
     <ul>
-      <li>Tagging is a judgement call, made once per unit against a fixed
-        vocabulary.</li>
-      <li>&ldquo;Untested&rdquo; means no concept in this atlas maps onto that
-        syllabus topic in the current selection. Sometimes that is a real gap,
-        sometimes a granularity mismatch where one concept covers several
-        syllabus topics.</li>
-      <li>Marks measure what examiners rewarded, which is not the same as
-        difficulty.</li>
+      <li>We tagged each unit once, by judgement, against a fixed vocabulary.</li>
+      <li>When we say untested we mean that no concept in our map points at that
+        syllabus topic in what you have selected. Sometimes that marks a real
+        gap. Sometimes it just means one of our concepts covers several syllabus
+        topics at once.</li>
+      <li>Marks tell you what examiners rewarded. They do not tell you what
+        students found hard.</li>
     </ul>
   </div>
 </div>
 
 <div id="foot"><div class="wrap">
-  <p>Problems and solutions come from the
+  <p>We took the problems and solutions from the
     <a href="https://github.com/ioanazelko/ioaa-problem-book">IOAA problem book</a>,
-    which is all rights reserved. Nothing here reproduces them: this page holds
-    syllabus topic names, mark shares and layout positions only. Not affiliated
-    with or endorsed by the IOAA.</p>
+    which is all rights reserved. We reproduce none of them here. This page
+    carries syllabus topic names, mark shares and layout positions and nothing
+    else. We are not affiliated with the IOAA and they have not endorsed this
+    work.</p>
   <p>Serat Saad and Fahim Rajit Hossain &middot;
     <a href="https://github.com/seratsaad/ioaa-knowledge-graph">source and method</a></p>
 </div></div>
@@ -556,10 +565,10 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     if (pw) pw.style.display = LV.provisional ? "" : "none";
     $("#level-hint").textContent =
       state.level === "topic"
-        ? "The individual topics the syllabus lists"
+        ? "We show every topic the syllabus lists"
         : state.level === "content"
-          ? "The syllabus's Contents column, rebuilt from the exam parts"
-          : "The syllabus's top-level sections";
+          ? "We rebuild the syllabus Contents column from the exam parts"
+          : "We roll everything up into the syllabus sections";
   }
 
   function boot(d) {
@@ -880,7 +889,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       + (n.syllabus ? "" : "  \u00B7  outside the syllabus");
     $("#d-name").textContent = n.name;
     $("#d-id").textContent = n.id;
-    $("#d-share").innerHTML = n.mass > 0 ? fmtPc(n.share) : "\u2014";
+    $("#d-share").innerHTML = n.mass > 0 ? fmtPc(n.share) : "0%";
     $("#d-units").textContent = n.units;
     $("#d-deg").textContent = n.deg;
 
@@ -893,7 +902,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     }).slice(0, 8);
     if (!links.length) {
       ul.innerHTML = "<li style='color:var(--ink-faint);font-size:var(--fs-micro)'>"
-        + "Nothing is examined alongside this in the current selection.</li>";
+        + "We see nothing examined alongside this in your selection.</li>";
     }
     links.forEach(function (l) {
       var m = N[l.j];
@@ -924,8 +933,8 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
   function breakdown(n) {
     if (n.mass <= 0) {
       return "<p style='font-size:var(--fs-micro);color:var(--ink-faint);"
-        + "line-height:1.5'>This topic is in the official syllabus but no exam "
-        + "part in the current selection tests it.</p>";
+        + "line-height:1.5'>The syllabus lists this topic, but we found no "
+        + "exam part in this selection that tests it.</p>";
     }
     var nE = DATA.meta.eras.length;
     function bar(labels, kind) {
@@ -1089,7 +1098,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       ["Untested topics", m.n_unexamined_topics],
       ["Off-syllabus concepts", m.n_off_syllabus_concepts],
       ["Links inside a section", fmtPc(a.within_section_edge_share)],
-      ["Same, if rewired", fmtPc(a.null_mean)],
+      ["What rewiring gives", fmtPc(a.null_mean)],
       ["Off-syllabus marks", fmtPc(a.off_syllabus.overall_share)]
     ];
     $("#facts").innerHTML = rows.map(function (r) {
@@ -1101,10 +1110,9 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
   function buildOverlay() {
     var box = $("#overlay-box");
     if (!DATA.overlays || !DATA.overlays.length) {
-      box.innerHTML = "<div class='overlay-empty'>No second corpus is loaded yet."
-        + " A tagged exam or textbook dropped into <code>data/external/</code>"
-        + " is projected onto this map without moving it, and its coverage of"
-        + " IOAA appears here.</div>";
+      box.innerHTML = "<p class='note'>We have not loaded a second corpus yet."
+        + " When we add a tagged exam or textbook, we lay it over this map"
+        + " without moving anything, and its coverage of IOAA shows up here.</p>";
       return;
     }
     box.innerHTML = DATA.overlays.map(function (o) {
@@ -1239,7 +1247,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     });
   }
   function fmtPc(v, dp) {
-    if (v === null || v === undefined) return "\u2014";
+    if (v === null || v === undefined) return "0%";
     var d = dp === undefined ? (v < 0.01 ? 2 : 1) : dp;
     return (v * 100).toFixed(d) + "%";
   }

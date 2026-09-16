@@ -1,191 +1,177 @@
-# IOAA Concept Atlas
+# IOAA Knowledge Graph
 
-**[Open the atlas →](https://seratsaad.github.io/ioaa-knowledge-graph/)**
+**[Open the map](https://seratsaad.github.io/ioaa-knowledge-graph/)**
 
-An interactive map of what the International Olympiad on Astronomy and
-Astrophysics actually tests. Every paper from 2007 to 2025 is split into its
-smallest scorable pieces — 800 units across 402 problems — and each is placed
-against the topics the official IOAA syllabus itself lists.
+Hi everyone. We went through every problem the International Olympiad on
+Astronomy and Astrophysics has set between 2007 and 2025, worked out what each
+one asks you to know, and drew the result as a map.
 
-Two topics are linked when the same exam part requires both. The strength is
-directional: of the marks that test A, what fraction also demand B.
+We split the papers into 800 scored parts across 402 problems, read each part
+next to its official solution, and matched what it needs to the 175 topics the
+official syllabus lists. We link two topics when the same exam part needs both.
 
 ## What you can do with it
 
-- View at the syllabus's own three levels: **section**, **content**, **topic**.
-- Filter to **theory**, **data analysis** or **observation**, in any
-  combination, over any span of years. Every number is recomputed from the
-  parts you keep.
-- See which syllabus topics are **not tested** in a given selection, drawn as
-  hollow rings, and which examined material sits **outside the syllabus**
-  altogether.
+- Look at the map at any of the three levels the syllabus itself uses, which
+  are section, content and topic.
+- Keep theory, data analysis or observation, in any mix, over any stretch of
+  years. We recompute every number from the parts you keep.
+- Find the syllabus topics nothing tests in your selection, which we draw as
+  hollow rings, and the material the exam tests that the syllabus never names.
 
-## How it works
+## How we built it
 
-Eight steps, each one a line of arithmetic. Nothing here is a black box.
+Eight steps, each one a line of arithmetic. We hide nothing.
 
-### 1. Split the papers into scorable units
+### 1. We split the papers into scored parts
 
-A *unit* is the smallest thing the marking scheme puts a number on: a sub-part
-where the paper gives per-part marks, the whole problem where it does not. That
-gives **800 units** across 402 problems, 2007–2025.
+We take the smallest piece the marking scheme puts a number on. Sometimes that
+means a sub-part and sometimes a whole problem. We end up with **800 parts**
+across 402 problems.
 
-### 2. Make marks comparable across years
+### 2. We make marks comparable across years
 
-Raw marks cannot be compared: the 2007 median problem was worth 2 points, the
-2008 median 20. So each unit's marks are normalised by its year's total,
+Marks do not mean the same thing from one year to the next. The median 2007
+problem carried 2 points and the median 2008 problem carried 20. So we divide
+each part's marks by the total for its year.
 
-> **w(u) = marks(u) / Σ marks over that year**
+> **w(u) = marks(u) / total marks that year**
 
-Every olympiad then contributes exactly 1, and the whole corpus sums to 19, one
-per year. Two gaps are handled explicitly: 2012 and 2014 published no marks at
-all and 2015 only three, so those problems take their year's median problem
-value; problems with no per-part breakdown split their total evenly. Every unit
-records which of these applied to it.
+Every olympiad then counts the same, and the whole corpus adds up to 19, one per
+year. Two years gave us trouble. The 2012 and 2014 papers never published marks
+and 2015 published only three, so we give those problems the median value for
+their year. Where a problem shows no per-part marks we split its total evenly.
+We record which of these we did for every part, so you can check us.
 
-### 3. Place each unit on the syllabus
+### 3. We place each part on the syllabus
 
-Each unit was read together with its official solution and tagged with the
-concepts a solver must actually *use* — not every topic the question mentions.
-Those concepts are then mapped onto the topics the official syllabus itself
-lists. Writing **K(u)** for the set of syllabus nodes a unit touches at a given
-level, note it is a *set*: a unit needing two concepts from one Content counts
-once for that Content, not twice.
+We read each part next to its official solution and write down the concepts you
+actually need to *use*, not every topic the question mentions. Then we match
+those concepts to the topics the official syllabus lists. Writing **K(u)** for
+the topics a part needs, note that it is a set. A part needing two concepts from
+one Content counts once for that Content, not twice.
 
-### 4. Node mass: how heavily something is examined
+### 4. We measure how heavily a topic is examined
 
-> **m(A) = Σ w(u) over every unit whose K(u) contains A**
+> **m(A) = sum of w(u) over every part that needs A**
 
-A dot's area is proportional to m(A). The percentage shown is m(A) divided by
-the total weight of the selection. **These shares do not sum to 100%** — they
-sum to about 400%, because a unit requiring four topics counts toward all four.
-Read it as coverage: *this fraction of the exam's marks sits in parts that
-require A*, not as a slice of a pie.
+A dot's area follows m(A). The percentage we show divides that by the total
+weight of your selection. **These percentages do not add up to 100.** They add
+up to roughly 400, because a part needing four topics counts toward all four.
+Read a number as coverage. It tells you what share of the marks sit in parts
+that need A, not what slice of a pie A owns.
 
-### 5. Links: what gets examined together
+### 5. We link topics that get examined together
 
-For a pair, the joint mass is the weight of the units needing both:
-
-> **n(A,B) = Σ w(u) over units whose K(u) contains both A and B**
-
-The link strength is directional, and it is just a conditional probability:
-
+> **n(A,B) = sum of w(u) over parts that need both**
+>
 > **p(B|A) = n(A,B) / m(A)**
 
-*Of the marks that test A, this fraction also demand B.* Direction matters and
-the atlas keeps both readings — 36% of the marks on orbital energy also need
-Kepler's first law, while only 20% the other way. Layout uses the mean of the
-two. Each pair also carries the hub-corrected
+Read that as the share of marks testing A that also demand B. Direction matters,
+so we keep both readings. Of the marks on orbital energy, 36 per cent also need
+Kepler's first law, while only 20 per cent run the other way. For the layout we
+average the two.
 
-> **npmi(A,B) = log[ P(A,B) / P(A)P(B) ] / −log P(A,B)** ∈ [−1, 1]
+We also work out normalised pointwise mutual information for every pair, which
+asks whether two topics turn up together more often than their separate rates
+predict. That stops a topic appearing everywhere from faking a strong link.
 
-which asks whether two topics co-occur more than their individual frequencies
-would predict, so that a topic appearing everywhere cannot fake a strong link.
+We took this measure from Sun, Ting et al. (2024), who built the astro-ph
+knowledge graph by asking what share of the papers cited by work on A discuss B.
+We ask the exam version of the same question.
 
-This is the exam analogue of the citation relevance used in the astro-ph
-knowledge graph of Sun, Ting et al. (2024), where the question is what fraction
-of the papers cited by work on A discuss B.
+### 6. We decide which links to keep
 
-### 6. Decide which links survive
-
-Keeping every pair would produce a hairball, and single observations would look
-like structure. So:
+Keeping every pair would give us a hairball, and single observations would look
+like structure. So we apply three rules.
 
 1. A pair needs **at least two separate exam parts** behind it. One unusual
-   question cannot invent a relationship.
-2. Each node keeps its **6 strongest** outgoing links, plus any link above a
-   floor of 0.05. The union of those is the edge set.
-3. That leaves topics examined exactly once with no link at all. Rather than
-   drop them — they include main-sequence stars and radioactive decay — each
-   gets its strongest single-part links, drawn **dashed** and excluded from
-   every statistic on the page.
+   question should not invent a relationship.
+2. Each topic keeps its **six strongest** links, plus any above a floor of 0.05.
+   We take the union of those.
+3. That leaves topics examined only once with no link at all. We did not want to
+   drop them, because they include main-sequence stars and radioactive decay. So
+   we draw their strongest single-part links **dashed** and keep those out of
+   every number we quote.
 
-### 7. Position
+### 7. We place the topics
 
-**ForceAtlas2** with logarithmic attraction: linked nodes pull together,
-everything repels everything, and heavier nodes repel more. There are no axes
-and no units — **only nearness means anything**. Communities come from the
-**Leiden** algorithm on the symmetric weights. Syllabus topics nothing examines
-have no links to place them, so they are parked beside their own Content group
-and drawn as hollow rings.
+We lay the map out with **ForceAtlas2** using logarithmic attraction. Linked
+topics pull together, everything pushes everything else apart, and heavier
+topics push harder. There are no axes and no units. **Only nearness means
+anything.** We group topics with the **Leiden** algorithm. Syllabus topics that
+nothing tests have no links to place them, so we park each one next to its own
+Content group and draw it as a hollow ring.
 
-### 8. Filter by round and period, live
+### 8. We let you filter live
 
-Mass is additive over exam parts, so every quantity is stored per
-(round × period) cell and summed over whichever cells you leave selected:
+Mark weight adds up across exam parts, so we store every quantity per round and
+period cell, then add up whichever cells you leave selected.
 
-> **m(A) = Σ m<sub>cell</sub>(A)**, and then **p(B|A) = n(A,B) / m(A)** as before
+> **m(A) = sum of the selected cells**, then **p(B|A) = n(A,B) / m(A)** as before
 
-Ratios are never summed — they are re-derived from the sums each time. That is
-why theory alone, data analysis alone, or any mixture over any span of years all
-give correct shares and link strengths rather than approximations.
+We never add ratios. We work them out again from those sums each time. That is
+why theory on its own, data analysis on its own, or any mixture over any stretch
+of years gives you exact numbers rather than an approximation.
 
-### Does the exam follow its own syllabus?
+## Does the exam follow its own syllabus?
 
-The test is whether links stay inside a syllabus section more than chance
-allows. Take the share of link weight whose two ends share a section, then
-compare it against 200 rewirings of the graph that keep every node's degree and
-reshuffle the weights, which destroys syllabus structure and nothing else.
+We wanted to know whether links stay inside a syllabus section more often than
+chance allows. So we measured the share of link weight whose two ends sit in the
+same section, then compared it against 200 rewirings that keep every topic's
+degree and shuffle the weights. Rewiring breaks the syllabus structure and
+leaves everything else alone.
 
 | | |
 |---|---|
-| Observed, links inside one section | 40.8% |
-| Rewired null | 11.4% ± 1.1% |
+| What we measured, links inside one section | 40.8% |
+| What rewiring gives | 11.4% ± 1.1% |
 | **z** | **25.9** |
 
-Counting the dashed links too gives 36.0% against the same null, so the answer
-does not depend on that choice. Newman's assortativity on section labels agrees
-at 0.27.
+If we count the dashed links too we get 36.0% against the same rewired
+baseline, so the answer does not hinge on that choice. Newman's assortativity on
+section labels agrees at 0.27.
 
-A caution on reading the map's communities: the Leiden partition agrees only
-weakly with the syllabus sections. That is a limitation of partition-matching
-scores on overlapping structure, not evidence against the result above — the
-assortativity and null test are the ones to quote.
+Our Leiden groups agree only weakly with the syllabus sections. That tells you
+more about how partition-matching scores behave on overlapping structure than
+about the result above, so quote the assortativity and the rewiring test.
 
-### What the method cannot tell you
+## What we found
 
-- Tagging is a judgement call, made once per unit against a fixed vocabulary.
-- "Untested" means no concept in this atlas maps onto that syllabus topic in
-  the current selection. Sometimes that is a genuine gap, sometimes a
-  granularity mismatch where one concept here covers several syllabus topics.
-- The syllabus was revised during the period studied, so 2007 papers are being
-  read against a document later than the one their authors used.
-- Marks measure what examiners rewarded, which is not the same as difficulty.
+The exam follows its syllabus much more closely than chance. It strays in one
+direction, into relativity, compact objects and gravitational waves, none of
+which the syllabus names. Those topics carried 1.6% of marks between 2007 and
+2012 and 3.5% between 2019 and 2025.
 
-## What it shows
+Reading down the topics that gained and up the ones that lost tells us the same
+thing twice. Reading values off a plot gained most, then least-squares fitting.
+Naked-eye observation lost most, then visual magnitude estimation. IOAA has
+moved marks out of visual observation and into quantitative data analysis.
 
-| | |
-|---|---|
-| Link weight inside one syllabus section | 40.8% |
-| Same, for a rewired graph with identical degrees | 11.4% ± 1.1% |
-| z | 25.9 |
-| Off-syllabus marks, 2007–2012 | 1.6% |
-| Off-syllabus marks, 2019–2025 | 3.5% |
+One caveat sits under all of this. The syllabus changed while we were studying
+it. The current version adds a Mathematical Methods and Tools section that
+includes basic calculus, where the older text ruled calculus out, so we read
+early papers against a document written later.
 
-The exam follows its syllabus far more closely than chance. It departs from it
-in one direction: relativity, compact objects and gravitational waves, none of
-which the syllabus names, and whose share has doubled.
+## What we cannot tell you
 
-Between 2007–2012 and 2019–2025 the largest gains were reading values off a
-plot and least-squares fitting; the largest losses were naked-eye observation
-and visual magnitude estimation. IOAA has moved marks out of visual observation
-and into quantitative data analysis.
-
-One caveat the atlas states on its own page: the syllabus was revised during
-this period. The current version adds a Mathematical Methods and Tools section
-including basic calculus, where the earlier text ruled calculus out.
+- We tagged each part once, by judgement, against a fixed vocabulary.
+- When we say untested we mean that no concept in our map points at that
+  syllabus topic in your selection. Sometimes that marks a real gap. Sometimes
+  it just means one of our concepts covers several syllabus topics at once.
+- Marks tell you what examiners rewarded. They do not tell you what students
+  found hard.
 
 ## Source material
 
-Problems and solutions come from the [IOAA problem
-book](https://github.com/ioanazelko/ioaa-problem-book), which is **all rights
-reserved**. Nothing here reproduces them: this repository contains only the
-rendered map and a data file of syllabus topic names, mark shares and layout
-positions. The analysis code lives in a separate private repository.
+We took the problems and solutions from the [IOAA problem
+book](https://github.com/ioanazelko/ioaa-problem-book), which is all rights
+reserved. We reproduce none of them here. This repository holds the rendered map
+and a data file of syllabus topic names, mark shares and layout positions. We
+keep the analysis code in a separate private repository.
 
-Not affiliated with or endorsed by the IOAA.
+We are not affiliated with the IOAA and they have not endorsed this work.
 
 ## Credits
 
-Serat Saad and Fahim Rajit Hossain. The relevance metric follows Sun, Ting et
-al. (2024), as used in the astro-ph knowledge graph.
+Serat Saad and Fahim Rajit Hossain.
