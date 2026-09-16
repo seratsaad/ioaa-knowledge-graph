@@ -1,13 +1,12 @@
 <title>IOAA Concept Atlas</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
-
 <style>
 /* ===========================================================================
    IOAA Concept Atlas — styled after arXiv.
-   Palette and font stacks are arXiv's own: Cornell red #b31b1b, link blue
-   #046baf, Lucida Grande for interface text, EB Garamond for prose. arXiv
-   ships no dark mode, so neither does this; every colour is painted
+   Palette and font stack are arXiv's own: Cornell red #b31b1b, link blue
+   #046baf, and 'Lucida Grande' sans throughout. arXiv loads no webfont and
+   sets one family on body that everything inherits, including paper titles;
+   it reserves a serif for two partner logos only, so there is no serif here.
+   It also ships no dark mode, so neither does this; every colour is painted
    explicitly so the page holds on any host background.
    =========================================================================== */
 
@@ -23,8 +22,15 @@
   --link:      #046baf;
   --link-dark: #264d71;
 
+  /* The canvas reads these three by name. Keep them literal: an undefined
+     custom property makes ctx.fillStyle silently keep its previous value,
+     which once painted the labels white on white. */
+  --edge:    #aab4c0;
+  --ink-dim: #222222;
+  --font:    'Lucida Grande', helvetica, arial, verdana, sans-serif;
+
   --sans: 'Lucida Grande', helvetica, arial, verdana, sans-serif;
-  --serif: "EB Garamond", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --serif: 'Lucida Grande', helvetica, arial, verdana, sans-serif;  /* arXiv sets one family for everything */
   --mono: monospace;
 
   /* section hues, darkened to sit on white the way arXiv's links do */
@@ -61,9 +67,9 @@ code, .mono { font-family: var(--mono); font-size: .92em; }
 
 /* ------------------------------------------------------------------- title */
 #title { padding: 22px 0 14px; }
-#title h1 { font: 500 30px/1.15 var(--serif); letter-spacing: -.005em; }
-#title .sub { font: 400 16px/1.45 var(--serif); color: var(--ink-2);
-              margin-top: 7px; max-width: 74ch; }
+#title h1 { font: bold 24px/1.2 var(--sans); }
+#title .sub { font: 400 14px/1.55 var(--sans); color: var(--ink-2);
+              margin-top: 8px; max-width: 86ch; }
 #title .byline { font-size: 12.5px; color: var(--muted); margin-top: 9px; }
 #title .byline b { color: var(--ink-2); font-weight: normal; }
 
@@ -133,7 +139,7 @@ figure { margin: 0 0 20px; }
 #detail .kicker { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; }
 #detail .kicker .sw { width: 9px; height: 9px; flex: none; }
 #detail .kicker .caps { font-size: 11px; color: var(--muted); }
-#detail h3 { font: 500 17px/1.25 var(--serif); margin-bottom: 2px; }
+#detail h3 { font: bold 14px/1.3 var(--sans); margin-bottom: 2px; }
 #detail .cid { font-family: var(--mono); font-size: 10.5px; color: var(--muted);
                word-break: break-all; }
 #detail .close { float: right; border: 0; background: none; color: var(--muted);
@@ -174,11 +180,11 @@ figcaption .sep { margin: 0 7px; color: var(--rule-2); }
           color: var(--muted); margin-top: 2px; }
 
 /* ------------------------------------------------------------------- prose */
-.doc { max-width: 78ch; padding-bottom: 8px; }
-.doc h2 { font: 500 20px/1.25 var(--serif); margin: 26px 0 8px;
+.doc { max-width: 88ch; padding-bottom: 8px; }
+.doc h2 { font: bold 17px/1.3 var(--sans); margin: 26px 0 8px;
           padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
-.doc h3 { font-size: 13px; margin: 16px 0 5px; color: var(--ink); }
-.doc p, .doc li { font: 400 15px/1.6 var(--serif); color: var(--ink-2); }
+.doc h3 { font: bold 13.5px/1.3 var(--sans); margin: 17px 0 5px; color: var(--ink); }
+.doc p, .doc li { font: 400 14px/1.6 var(--sans); color: var(--ink-2); }
 .doc ul, .doc ol { margin: 0 0 .75em; padding-left: 1.3em; }
 .doc li { margin-bottom: .3em; }
 .doc .eq { font-family: var(--mono); font-size: 13px; background: var(--tint);
@@ -442,8 +448,12 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
   "use strict";
 
   var SEC_ORDER = ["BA","MM","CT","SS","ST","SY","CO","RE","IN","OB","DA","XS"];
-  var cssVar = function (n) {
-    return getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  var cssVar = function (n, fallback) {
+    var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    if (v) return v;
+    // A missing custom property would otherwise leave the canvas painting with
+    // whatever colour was set last. Fail to a visible ink instead.
+    return fallback || "#333333";
   };
   var secColor = {};
   function readColors() {
@@ -737,10 +747,11 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       });
       if (clash && n.idx !== focus) return;
       placed.push(box);
-      ctx.globalAlpha = 0.78; ctx.fillStyle = bg;
+      ctx.globalAlpha = 0.86; ctx.fillStyle = bg;
       ctx.fillRect(box[0], box[1], box[2], box[3]);
       ctx.globalAlpha = 1;
-      ctx.fillStyle = n.idx === focus ? cssVar("--ink") : cssVar("--ink-dim");
+      ctx.fillStyle = n.idx === focus ? cssVar("--ink", "#000")
+                                      : cssVar("--ink-dim", "#222");
       ctx.fillText(t, X, Y);
     });
   }
