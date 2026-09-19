@@ -338,11 +338,19 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       we divide each unit's marks by the total for its year, which makes every
       olympiad count the same.</p>
     <div class="eq">\[ w(u) \;=\; \frac{\mathrm{marks}(u)}{\displaystyle\sum_{u' \in \mathrm{year}(u)} \mathrm{marks}(u')} \]</div>
+    <p>Pooling a year's marks in one lump would still get the balance wrong,
+      because it lets whichever round we happen to hold more parts for take
+      over. IOAA scores theory, data analysis and observation 2 to 1 to 1, so we
+      normalise each round inside itself and then hand it its official share of
+      the year. Pooling gave theory 59 per cent of the weight. It now gets the
+      50 per cent the statutes give it.</p>
     <p>Two years gave us trouble. The 2012 and 2014 papers never published marks
       and 2015 published only three, so we give those problems the median value
       for their year. Where a problem shows no per-part marks we split its total
-      evenly. We record which of these we did for every unit, so you can check
-      us.</p>
+      evenly. The book carries no observation round for 2010, 2013 and 2020, so
+      in those years we spread the observation share across the rounds we do
+      hold and the year still counts once. We record all of this for every unit,
+      so you can check us.</p>
 
     <h3>2. How heavily we see a topic examined</h3>
     <div class="eq">\[ m(A) \;=\; \sum_{u \,:\, A \in K(u)} w(u) \]</div>
@@ -359,8 +367,8 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     <div class="eq">\[ n(A,B) \;=\; \sum_{u \,:\, A,\,B \in K(u)} w(u)
       \qquad\qquad p(B \mid A) \;=\; \frac{n(A,B)}{m(A)} \]</div>
     <p>Read that as the share of marks testing A that also demand B. Direction
-      matters, so we keep both readings. Of the marks on orbital energy, 36 per
-      cent also need Kepler's first law, while only 20 per cent run the other
+      matters, so we keep both readings. Of the marks on orbital energy, 39 per
+      cent also need Kepler's first law, while only 21 per cent run the other
       way. For the layout we average the two. We also work out normalised
       pointwise mutual information for every pair, which asks whether two topics
       turn up together more often than their separate rates predict. That stops
@@ -379,7 +387,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
         want to drop them, because they include main-sequence stars and
         radioactive decay. So we draw their strongest single-part links as
         dashed lines and keep those out of every number on this page.
-        <span id="a-prov">199</span> links are dashed for that reason.</li>
+        <span id="a-prov">196</span> links are dashed for that reason.</li>
     </ol>
 
     <h3>5. How we placed everything</h3>
@@ -393,7 +401,19 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       in our map pointing at them, and <span id="a-offsyl">60</span> concepts
       the exam tests have no home in the syllabus at all.</p>
 
-    <h3>6. Filter by round and period</h3>
+    <h3>6. A fourth cut, the book's own chapters</h3>
+    <p>The IOAA problem book sorts the same problems into 14 chapters of its
+      own, which is an editor's reading of the material rather than the
+      syllabus's. Every exam part sits in exactly one chapter, so chapters never
+      share a part and a part-based graph of them would have no links at all.
+      What they do share is concepts, 204 of our 337 turn up in more than one
+      chapter, so at this level the concept does the linking and a link reads as
+      the share of one chapter's concept mass that another chapter also
+      examines. We colour each chapter by the syllabus section it draws on most,
+      which is where Compact Objects and Gravitational Waves show up as sitting
+      outside the syllabus.</p>
+
+    <h3>7. Filter by round and period</h3>
     <p>Mark weight adds up across exam parts, so we store every quantity per
       round and period cell, then add up whichever cells you leave selected. We
       never add ratios. We work them out again from those sums each time you
@@ -408,11 +428,11 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
       every topic's degree and shuffle the weights. Rewiring breaks the syllabus
       structure and leaves everything else alone.</p>
     <table class="data">
-      <tr><td>What we measured, links inside one section</td><td class="n" id="a-within">40.8%</td></tr>
-      <tr><td>What rewiring gives</td><td class="n" id="a-null">11.4%</td></tr>
-      <tr class="hi"><td>z</td><td class="n" id="a-z">25.9</td></tr>
+      <tr><td>What we measured, links inside one section</td><td class="n" id="a-within">40.4%</td></tr>
+      <tr><td>What rewiring gives</td><td class="n" id="a-null">11.5%</td></tr>
+      <tr class="hi"><td>z</td><td class="n" id="a-z">24.5</td></tr>
     </table>
-    <p>If we count the dashed links too we get 36.0 per cent against the same
+    <p>If we count the dashed links too we get 35.9 per cent against the same
       rewired baseline, so the answer does not hinge on that choice. Newman's
       assortativity on section labels agrees at 0.27. Our Leiden groups agree
       only weakly with the syllabus sections, but that tells you more about how
@@ -423,7 +443,7 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     <p>The exam follows its syllabus much more closely than chance. It strays in
       one direction, into relativity, compact objects and gravitational waves,
       none of which the syllabus names. Those topics carried
-      <span id="a-early">1.6%</span> of marks between 2007 and 2012 and
+      <span id="a-early">1.4%</span> of marks between 2007 and 2012 and
       <span id="a-late">3.5%</span> between 2019 and 2025.</p>
     <p>Reading down the topics that gained and up the ones that lost tells us
       the same thing twice. IOAA has moved marks out of visual observation and
@@ -559,14 +579,17 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     var allE = en.length === DATA.meta.eras.length;
     $("#st-main").innerHTML = "<b>" + shown + "</b> "
       + (state.level === "topic" ? "topics"
-         : state.level === "content" ? "syllabus contents" : "syllabus sections")
+         : state.level === "content" ? "syllabus contents"
+         : state.level === "chapter" ? "book chapters" : "syllabus sections")
       + " tested &middot; <b>" + links + "</b> links &middot; "
       + (allR ? "all rounds" : "<b>" + rn.join(" + ") + "</b>") + ", "
       + (allE ? DATA.meta.years[0] + "\u2013" + DATA.meta.years[1]
               : "<b>" + en.join(" + ").replace(/-/g, "\u2013") + "</b>");
     $("#st-ring").innerHTML = (hollow
       ? "<b>" + hollow + "</b> syllabus topics untested here (hollow)"
-      : "every syllabus topic here is tested")
+      : state.level === "chapter"
+        ? "chapters are linked by the concepts they share"
+        : "every syllabus topic here is tested")
       + (LV.provisional && state.showProv
          ? " &middot; dashed links rest on a single exam part" : "");
     var uw = $("#btn-unex").closest(".opt");
@@ -576,6 +599,8 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
     $("#level-hint").textContent =
       state.level === "topic"
         ? "We show every topic the syllabus lists"
+        : state.level === "chapter"
+          ? "The problem book's own 14 chapters, linked by the concepts they share"
         : state.level === "content"
           ? "We rebuild the syllabus Contents column from the exam parts"
           : "We roll everything up into the syllabus sections";
@@ -614,8 +639,11 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
         if (state.eras[ei]) ACTIVE.push(ri * nE + ei);
       });
     });
+    // Each level has its own total. Chapter masses are built from concepts
+    // rather than exam parts, so they sit on a different scale entirely.
+    var totals = (LV && LV.cell_totals) || DATA.meta.cell_totals;
     WSEL = 0;
-    ACTIVE.forEach(function (c) { WSEL += DATA.meta.cell_totals[c] || 0; });
+    ACTIVE.forEach(function (c) { WSEL += totals[c] || 0; });
     if (!WSEL) WSEL = 1;
 
     for (var i = 0; i < N.length; i++) {
@@ -1093,14 +1121,15 @@ table.data tr.hi td { font-weight: bold; color: var(--ink); }
   /* ----------------------------------------------------- rounds + periods - */
   function cellWeight(kind, i) {
     var nE = DATA.meta.eras.length, w = 0;
-    DATA.meta.cell_totals.forEach(function (v, c) {
+    ((LV && LV.cell_totals) || DATA.meta.cell_totals).forEach(function (v, c) {
       if (kind === "round" ? Math.floor(c / nE) === i : (c % nE) === i) w += v;
     });
     return w;
   }
 
   function buildChipGroup(host, labels, flags, kind) {
-    var total = DATA.meta.cell_totals.reduce(function (x, y) { return x + y; }, 0);
+    var ct = (LV && LV.cell_totals) || DATA.meta.cell_totals;
+    var total = ct.reduce(function (x, y) { return x + y; }, 0);
     labels.forEach(function (name, i) {
       var lab = document.createElement("label");
       lab.className = "opt" + (flags[i] ? " on" : "");

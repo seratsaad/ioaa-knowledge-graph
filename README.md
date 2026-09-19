@@ -13,7 +13,7 @@ official syllabus lists. We link two topics when the same exam part needs both.
 ## What you can do with it
 
 - Look at the map at any of the three levels the syllabus itself uses, which
-  are section, content and topic.
+  are section, content and topic, or at the problem book's own 14 chapters.
 - Keep theory, data analysis or observation, in any mix, over any stretch of
   years. We recompute every number from the parts you keep.
 - Find the syllabus topics nothing tests in your selection, which we draw as
@@ -37,11 +37,19 @@ each part's marks by the total for its year.
 
 > **w(u) = marks(u) / total marks that year**
 
-Every olympiad then counts the same, and the whole corpus adds up to 19, one per
-year. Two years gave us trouble. The 2012 and 2014 papers never published marks
-and 2015 published only three, so we give those problems the median value for
-their year. Where a problem shows no per-part marks we split its total evenly.
-We record which of these we did for every part, so you can check us.
+Pooling a year's marks in one lump still gets the balance wrong, because it
+lets whichever round we happen to hold more parts for take over. IOAA scores
+theory, data analysis and observation 2 to 1 to 1, so we normalise each round
+inside itself and then hand it its official share of the year. Pooling gave
+theory 59 per cent of the weight. It now gets the 50 per cent the statutes give
+it.
+
+Three gaps are handled openly. The 2012 and 2014 papers never published marks
+and 2015 published only three, so those problems take their year's median
+problem value. Where a problem shows no per-part marks we split its total
+evenly. The book carries no observation round for 2010, 2013 and 2020, so in
+those years we spread the observation share across the rounds we do hold and the
+year still counts once. We record all of it per part, so you can check us.
 
 ### 3. We place each part on the syllabus
 
@@ -68,8 +76,8 @@ that need A, not what slice of a pie A owns.
 > **p(B|A) = n(A,B) / m(A)**
 
 Read that as the share of marks testing A that also demand B. Direction matters,
-so we keep both readings. Of the marks on orbital energy, 36 per cent also need
-Kepler's first law, while only 20 per cent run the other way. For the layout we
+so we keep both readings. Of the marks on orbital energy, 39 per cent also need
+Kepler's first law, while only 21 per cent run the other way. For the layout we
 average the two.
 
 We also work out normalised pointwise mutual information for every pair, which
@@ -103,7 +111,21 @@ anything.** We group topics with the **Leiden** algorithm. Syllabus topics that
 nothing tests have no links to place them, so we park each one next to its own
 Content group and draw it as a hollow ring.
 
-### 8. We let you filter live
+### 8. A fourth cut, the book's own chapters
+
+The IOAA problem book sorts the same problems into 14 chapters of its own, which
+is an editor's reading of the material rather than the syllabus's. Every exam
+part sits in exactly one chapter, so chapters never share a part and a
+part-based graph of them would have no links at all. What they do share is
+concepts, 204 of our 337 turn up in more than one chapter. So at this level the
+concept does the linking, and a link reads as the share of one chapter's concept
+mass that another chapter also examines.
+
+We colour each chapter by the syllabus section it draws on most. That is where
+Compact Objects and Gravitational Waves show up as sitting outside the syllabus
+altogether.
+
+### 9. We let you filter live
 
 Mark weight adds up across exam parts, so we store every quantity per round and
 period cell, then add up whichever cells you leave selected.
@@ -124,11 +146,11 @@ leaves everything else alone.
 
 | | |
 |---|---|
-| What we measured, links inside one section | 40.8% |
-| What rewiring gives | 11.4% ± 1.1% |
-| **z** | **25.9** |
+| What we measured, links inside one section | 40.4% |
+| What rewiring gives | 11.5% ± 1.2% |
+| **z** | **24.5** |
 
-If we count the dashed links too we get 36.0% against the same rewired
+If we count the dashed links too we get 35.9% against the same rewired
 baseline, so the answer does not hinge on that choice. Newman's assortativity on
 section labels agrees at 0.27.
 
@@ -140,7 +162,7 @@ about the result above, so quote the assortativity and the rewiring test.
 
 The exam follows its syllabus much more closely than chance. It strays in one
 direction, into relativity, compact objects and gravitational waves, none of
-which the syllabus names. Those topics carried 1.6% of marks between 2007 and
+which the syllabus names. Those topics carried 1.4% of marks between 2007 and
 2012 and 3.5% between 2019 and 2025.
 
 Reading down the topics that gained and up the ones that lost tells us the same
